@@ -18,7 +18,7 @@ test.beforeEach(() => {
 const suma = (dias) => db.prepare("SELECT date('now', 'localtime', ?) AS d").get(`${dias >= 0 ? '+' : ''}${dias} days`).d;
 
 test('un pedido para un día futuro queda programado; para hoy o un día pasado es un pedido común', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = crearProducto(db, { nombre: 'Milanesa', precio: 1000, unidad: 'kg' });
   const items = [{ producto_id: p, cantidad: 3 }];
   const viernes = suma(4);
@@ -41,7 +41,7 @@ test('un pedido para un día futuro queda programado; para hoy o un día pasado 
 });
 
 test('las cantidades pedidas cuentan el día para el que es el pedido', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = crearProducto(db, { nombre: 'Milanesa', precio: 1000, unidad: 'kg' });
   const viernes = suma(4);
   await invocar('pedidos:crear', { cliente_id: c, items: [{ producto_id: p, cantidad: 5 }], para_fecha: viernes });
@@ -55,7 +55,7 @@ test('las cantidades pedidas cuentan el día para el que es el pedido', async ()
 });
 
 test('la campanita avisa de los pedidos programados para mañana, y un programado no figura como pedido viejo', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = crearProducto(db, { nombre: 'Milanesa', precio: 1000, unidad: 'kg' });
   const items = [{ producto_id: p, cantidad: 1 }];
   await invocar('pedidos:crear', { cliente_id: c, items, para_fecha: suma(1) });

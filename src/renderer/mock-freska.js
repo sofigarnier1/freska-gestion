@@ -23,7 +23,7 @@ if (!window.freska) {
   let clientes = [
     { id: 1, codigo: '1', nombre: 'Almacén Don Pepe', apellido: '', telefono: '5493511234567', domicilio: 'San Martín 450', saldo: 4500, activo: 1 },
     { id: 2, codigo: '2', nombre: 'Restaurante La Parrilla', apellido: '', telefono: '', domicilio: '', saldo: 0, activo: 1 },
-    { id: 3, codigo: '3', nombre: 'Ana', apellido: 'Rodríguez', negocio: 'Kiosco El Sol', telefono: '', domicilio: '', saldo: 1200.5, activo: 1 },
+    { id: 3, codigo: '3', nombre: 'Alma', apellido: 'Rodríguez', negocio: 'Kiosco El Sol', telefono: '', domicilio: '', saldo: 1200.5, activo: 1 },
   ];
   let productos = [
     { id: 1, codigo: '1', nombre: 'Milanesas de pollo', precio_cliente: 4200, precio_cf: 4800, unidad: 'kg', activo: 1 },

@@ -40,7 +40,7 @@ for (const semilla of [1, 2, 3, 42, 2026, 7, 99, 12345]) {
     const elegir = (lista) => lista[Math.floor(r() * lista.length)];
     const centavos = (n) => Math.round(n * 100) / 100;
 
-    const clientes = ['Ana', 'Beto', 'Carla', 'Dani'].map((n) => crearCliente(db, n));
+    const clientes = ['Alma', 'Bruno', 'Camila', 'Dani'].map((n) => crearCliente(db, n));
     const productos = [
       crearProducto(db, { nombre: 'Asado', precio: 8499.99, unidad: 'kg' }),
       crearProducto(db, { nombre: 'Pollo', precio: 3199.5, unidad: 'kg' }),

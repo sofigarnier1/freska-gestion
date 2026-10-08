@@ -55,7 +55,7 @@ async function renderCheques() {
         </div>
         <div class="cheque-efectivo-cambio">
           <label><input type="checkbox" id="cheque-efectivo-cambio" /> Le di efectivo a cambio</label>
-          ${botonAyudaHtml('ayuda-cheque-efectivo', 'Le di efectivo a cambio', '<p>Para cuando alguien (por ejemplo Hugo) te da un cheque y vos le das la misma plata en efectivo. El cheque entra a la cartera y sale ese importe del efectivo de la caja de hoy. No cuenta como ingreso ni como gasto. Si borrás el cheque, el efectivo vuelve.</p>')}
+          ${botonAyudaHtml('ayuda-cheque-efectivo', 'Le di efectivo a cambio', '<p>Para cuando alguien (por ejemplo Hernán) te da un cheque y vos le das la misma plata en efectivo. El cheque entra a la cartera y sale ese importe del efectivo de la caja de hoy. No cuenta como ingreso ni como gasto. Si borrás el cheque, el efectivo vuelve.</p>')}
         </div>
         <p id="error-cheque" class="error-msg" style="display:none"></p>
         <div class="btn-group">

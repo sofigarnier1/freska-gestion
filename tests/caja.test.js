@@ -73,7 +73,7 @@ test('"todo lo pagado en el día" trae gastos en efectivo y por transferencia, y
 
 test('un cheque recibido a cambio de efectivo entra a la cartera y descuenta el efectivo, sin ser ingreso ni gasto', async () => {
   const dia = hoy();
-  const r = await invocar('cheques:crear', { banco: 'Nación', numero: '123', importe: 50000, librador: 'Hugo', efectivo_a_cambio: true });
+  const r = await invocar('cheques:crear', { banco: 'Nación', numero: '123', importe: 50000, librador: 'Hernán', efectivo_a_cambio: true });
   assert.equal(r.ok, true);
   const cheque = db.prepare("SELECT id, estado FROM cheques WHERE numero = '123'").get();
   assert.equal(cheque.estado, 'en_cartera');
@@ -93,13 +93,13 @@ test('un cheque recibido a cambio de efectivo entra a la cartera y descuenta el 
 
 test('borrar el cheque recibido a cambio de efectivo devuelve el efectivo; si ya se entregó, no se puede deshacer', async () => {
   const dia = hoy();
-  await invocar('cheques:crear', { banco: 'Galicia', numero: '9', importe: 20000, librador: 'Hugo', efectivo_a_cambio: true });
+  await invocar('cheques:crear', { banco: 'Galicia', numero: '9', importe: 20000, librador: 'Hernán', efectivo_a_cambio: true });
   const uno = db.prepare("SELECT id FROM cheques WHERE numero = '9'").get().id;
   await invocar('cheques:eliminar', uno);
   assert.equal(db.prepare('SELECT COUNT(*) AS n FROM operaciones_caja').get().n, 0);
   assert.equal((await invocar('caja:obtenerDia', dia)).otrosEfectivo, 0);
 
-  await invocar('cheques:crear', { banco: 'Galicia', numero: '10', importe: 20000, librador: 'Hugo', efectivo_a_cambio: true });
+  await invocar('cheques:crear', { banco: 'Galicia', numero: '10', importe: 20000, librador: 'Hernán', efectivo_a_cambio: true });
   const dos = db.prepare("SELECT id FROM cheques WHERE numero = '10'").get().id;
   await invocar('cheques:entregar', { id: dos, entregado_a: 'Otro', fecha_entrega: dia });
   const op = db.prepare('SELECT id FROM operaciones_caja WHERE cheque_id = ?').get(dos);

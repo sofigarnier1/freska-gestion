@@ -25,7 +25,7 @@ const idPila = async (nombre) => {
 };
 
 test('un producto por kilo lleva su propia pila: la producción suma y lo facturado resta', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = crearProducto(db, { nombre: 'Asado', unidad: 'kg' });
   const f = await facturar(c, [{ producto_id: p, cantidad: 10 }]);
   assert.equal((await pila('Asado')).stock, -10, 'sin producción, lo vendido deja el stock en negativo');
@@ -36,7 +36,7 @@ test('un producto por kilo lleva su propia pila: la producción suma y lo factur
 });
 
 test('un producto por caja descuenta los kilos de la caja y muestra cuántas cajas hay', async () => {
-  const c = crearCliente(db, 'Beto');
+  const c = crearCliente(db, 'Bruno');
   const caja = crearProducto(db, { nombre: 'Hamburguesas (x32)', unidad: 'unidad' });
   assert.equal((await invocar('stock:vincular', { producto_id: caja, kg_por_unidad: 2.46 })).ok, true);
   const art = await idPila('Hamburguesas');
@@ -50,7 +50,7 @@ test('un producto por caja descuenta los kilos de la caja y muestra cuántas caj
 });
 
 test('un producto suelto comparte la pila de la caja: cada unidad resta su peso', async () => {
-  const c = crearCliente(db, 'Carla');
+  const c = crearCliente(db, 'Camila');
   const caja = crearProducto(db, { nombre: 'Hamburguesas (x32)', unidad: 'unidad' });
   const suelta = crearProducto(db, { nombre: 'Hamburguesa suelta', unidad: 'unidad' });
   await invocar('stock:vincular', { producto_id: caja, kg_por_unidad: 2.5 });
@@ -129,7 +129,7 @@ test('ajustar dos veces el mismo artículo el mismo día corrige el mismo rengl�
 });
 
 test('los pedidos pendientes bajan lo disponible pero no el stock', async () => {
-  const c = crearCliente(db, 'Fede');
+  const c = crearCliente(db, 'Fabio');
   const p = crearProducto(db, { nombre: 'Lomo', unidad: 'kg' });
   await invocar('stock:resumen');
   await producir(await idPila('Lomo'), 20);

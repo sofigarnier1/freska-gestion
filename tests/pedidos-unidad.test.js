@@ -22,7 +22,7 @@ const chorizo = (extra = {}) => {
 const itemsDe = (pedidoId) => db.prepare('SELECT producto_id, cantidad, unidad_pedido FROM pedido_items WHERE pedido_id = ? ORDER BY id').all(pedidoId);
 
 test('un producto por kilo que se puede pedir por unidad guarda "6 u." y el resumen lo dice', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = chorizo();
   const r = await invocar('pedidos:crear', { cliente_id: c, items: [{ producto_id: p, cantidad: 6, unidad_pedido: 'unidad' }] });
   assert.deepEqual(itemsDe(r.id), [{ producto_id: p, cantidad: 6, unidad_pedido: 'unidad' }]);
@@ -34,7 +34,7 @@ test('un producto por kilo que se puede pedir por unidad guarda "6 u." y el resu
 });
 
 test('si el producto no se puede pedir por unidad, el pedido sigue siendo en kilos', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = chorizo({ pedible: 0 });
   const r = await invocar('pedidos:crear', { cliente_id: c, items: [{ producto_id: p, cantidad: 2, unidad_pedido: 'unidad' }] });
   assert.equal(itemsDe(r.id)[0].unidad_pedido, null);
@@ -42,10 +42,10 @@ test('si el producto no se puede pedir por unidad, el pedido sigue siendo en kil
 });
 
 test('Pedidos de hoy separa lo pedido en kilos de lo pedido por unidad', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = chorizo();
   await invocar('pedidos:crear', { cliente_id: c, items: [{ producto_id: p, cantidad: 2, unidad_pedido: null }, { producto_id: p, cantidad: 6, unidad_pedido: 'unidad' }] });
-  await invocar('pedidos:crear', { cliente_id: crearCliente(db, 'Beto'), items: [{ producto_id: p, cantidad: 4, unidad_pedido: 'unidad' }] });
+  await invocar('pedidos:crear', { cliente_id: crearCliente(db, 'Bruno'), items: [{ producto_id: p, cantidad: 4, unidad_pedido: 'unidad' }] });
   const filas = (await invocar('reportes:cantidadesPedidasPorDia')).filter((f) => f.periodo === hoy());
   const kg = filas.find((f) => f.producto_unidad === 'kg');
   const u = filas.find((f) => f.producto_unidad === 'unidad');
@@ -56,7 +56,7 @@ test('Pedidos de hoy separa lo pedido en kilos de lo pedido por unidad', async (
 });
 
 test('al facturar el pedido, lo pedido por unidad se conserva y lo facturado en kilos queda en la factura', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = chorizo();
   const otro = crearProducto(db, { nombre: 'Asado', precio: 8000, unidad: 'kg' });
   const r = await invocar('pedidos:crear', { cliente_id: c, items: [{ producto_id: p, cantidad: 6, unidad_pedido: 'unidad' }, { producto_id: otro, cantidad: 3 }] });
@@ -71,7 +71,7 @@ test('al facturar el pedido, lo pedido por unidad se conserva y lo facturado en 
 });
 
 test('editar un pedido conserva si una línea es por unidad', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = chorizo();
   const r = await invocar('pedidos:crear', { cliente_id: c, items: [{ producto_id: p, cantidad: 6, unidad_pedido: 'unidad' }] });
   await invocar('pedidos:actualizar', { id: r.id, items: [{ producto_id: p, cantidad: 8, unidad_pedido: 'unidad' }] });
@@ -79,7 +79,7 @@ test('editar un pedido conserva si una línea es por unidad', async () => {
 });
 
 test('la lista de carga separa lo pendiente en kilos de lo pendiente por unidad', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = chorizo();
   await invocar('pedidos:crear', { cliente_id: c, items: [{ producto_id: p, cantidad: 2 }, { producto_id: p, cantidad: 6, unidad_pedido: 'unidad' }] });
   const prod = (await invocar('carga:hoy')).productos.find((x) => x.producto_id === p);
@@ -89,7 +89,7 @@ test('la lista de carga separa lo pendiente en kilos de lo pendiente por unidad'
 });
 
 test('el stock cuenta lo pendiente por unidad como esas unidades por su peso, no como kilos', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = chorizo();
   await invocar('pedidos:crear', { cliente_id: c, items: [{ producto_id: p, cantidad: 6, unidad_pedido: 'unidad' }, { producto_id: p, cantidad: 2 }] });
   const stock = await invocar('stock:resumen');
@@ -117,7 +117,7 @@ test('productos: se puede pedir por unidad solo si se vende por kilo, y el peso 
 });
 
 test('si el mismo pedido tiene kilos y unidades del mismo producto, al facturar se conservan las dos líneas pedidas', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = chorizo();
   const r = await invocar('pedidos:crear', { cliente_id: c, items: [{ producto_id: p, cantidad: 2 }, { producto_id: p, cantidad: 6, unidad_pedido: 'unidad' }] });
   const factura = await invocar('facturas:crear', { cliente_id: c, tipo_precio: 'cliente', items: [{ producto_id: p, cantidad: 1.3 }, { producto_id: p, cantidad: 2.1 }] });
@@ -126,7 +126,7 @@ test('si el mismo pedido tiene kilos y unidades del mismo producto, al facturar 
 });
 
 test('la factura guarda cuántas unidades pidieron de una línea pesada, y las lecturas lo devuelven', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = chorizo();
   const factura = await invocar('facturas:crear', { cliente_id: c, tipo_precio: 'cliente', items: [{ producto_id: p, cantidad: 1.1, pedido_unidades: 5 }] });
   const items = await invocar('facturas:items', factura.id);
@@ -138,7 +138,7 @@ test('la factura guarda cuántas unidades pidieron de una línea pesada, y las l
 });
 
 test('productos:listar propone la unidad de la última vez: "unidad" si nunca se pidió, o lo último que se usó', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = chorizo();
   const ultima = async () => (await invocar('productos:listar')).find((x) => x.id === p).ultima_unidad_pedido;
   assert.equal(await ultima(), null, 'nunca se pidió: el cliente propone "unidad"');

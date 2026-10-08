@@ -131,7 +131,7 @@ function registrar(ctx) {
           movs.push({ id: o.id, cuenta: canonica(o.cuenta), fecha: o.fecha, monto: -o.monto, detalle: `Compra de U$S ${o.usd} a $${o.cotizacion}`, tipo: 'dolares' });
         } else if (o.tipo === 'canje') {
           // Monto positivo: se cambió un cheque de la cartera por plata. Negativo: se recibió un cheque (de un
-          // tercero, como Hugo) y se dio efectivo a cambio.
+          // tercero, como Hernán) y se dio efectivo a cambio.
           const ch = cheque.get(o.cheque_id);
           const deCheque = ch ? ` ${ch.banco} N° ${ch.numero}` : '';
           movs.push({ id: o.id, cuenta: canonica(o.cuenta), fecha: o.fecha, monto: o.monto, detalle: o.monto >= 0 ? `Canje del cheque${deCheque}` : `Efectivo a cambio del cheque${deCheque}`, tipo: 'canje' });

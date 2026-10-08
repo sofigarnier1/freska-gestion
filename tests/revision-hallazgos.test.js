@@ -45,7 +45,7 @@ test('el aviso de anulaciones de un empleado desaparece a los 14 días y se va a
   await invocar('usuarios:crear', { nombre: 'Emp', pin: '5678', rol: 'empleado' });
   const jefa = db.prepare("SELECT id FROM usuarios WHERE nombre = 'Jefa'").get().id;
   const emp = db.prepare("SELECT id FROM usuarios WHERE nombre = 'Emp'").get().id;
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = crearProducto(db, { nombre: 'ProdAn', precio: 1000 });
   const f = await invocar('facturas:crear', { cliente_id: c, tipo_precio: 'cliente', items: [{ producto_id: p, cantidad: 1 }] });
   await invocar('usuarios:ingresar', { usuario_id: emp, pin: '5678' });
@@ -73,7 +73,7 @@ test('pasar una categoría a un grupo donde ya existe con ese nombre da un mensa
 });
 
 test('el servidor no deja cargar cobros a una factura anulada ni de monto cero o negativo', async () => {
-  const c = crearCliente(db, 'Beto');
+  const c = crearCliente(db, 'Bruno');
   const p = crearProducto(db, { nombre: 'ProdBe', precio: 1000 });
   const f = await invocar('facturas:crear', { cliente_id: c, tipo_precio: 'cliente', items: [{ producto_id: p, cantidad: 1 }] });
   await assert.rejects(() => invocar('facturas:registrarPago', { factura_id: f.id, monto: -5, metodo_pago: 'Efectivo' }), /mayor a cero/);

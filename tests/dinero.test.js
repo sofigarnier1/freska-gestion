@@ -21,7 +21,7 @@ const pagosDe = (id) => db.prepare('SELECT * FROM pagos WHERE factura_id = ? ORD
 const crearFactura = async (clienteId, items, tipo = 'cliente') => invocar('facturas:crear', { cliente_id: clienteId, tipo_precio: tipo, items });
 
 test('una factura suma su total al saldo del cliente y arranca pendiente', async () => {
-  const c = crearCliente(db, 'Ana');
+  const c = crearCliente(db, 'Alma');
   const p = crearProducto(db, { nombre: 'Asado', precio: 8000, unidad: 'kg' });
   const f = await crearFactura(c, [{ producto_id: p, cantidad: 2.5 }]);
   assert.equal(f.total, 20000);
@@ -32,7 +32,7 @@ test('una factura suma su total al saldo del cliente y arranca pendiente', async
 });
 
 test('el precio de la línea manda; sin precio se usa el del catálogo según el tipo (cliente o CF)', async () => {
-  const c = crearCliente(db, 'Beto');
+  const c = crearCliente(db, 'Bruno');
   const p = crearProducto(db, { nombre: 'Pollo', precio: 3000, precioCf: 3600, unidad: 'kg' });
   assert.equal((await crearFactura(c, [{ producto_id: p, cantidad: 1 }], 'cliente')).total, 3000);
   assert.equal((await crearFactura(c, [{ producto_id: p, cantidad: 1 }], 'cf')).total, 3600);
@@ -40,7 +40,7 @@ test('el precio de la línea manda; sin precio se usa el del catálogo según el
 });
 
 test('un pago parcial deja la factura en "parcial" y uno que completa la deja "pagada"', async () => {
-  const c = crearCliente(db, 'Carla');
+  const c = crearCliente(db, 'Camila');
   const p = crearProducto(db, { nombre: 'Vacío', precio: 1000 });
   const f = await crearFactura(c, [{ producto_id: p, cantidad: 10 }]);
   await invocar('facturas:registrarPago', { factura_id: f.id, monto: 4000, metodo_pago: 'Efectivo' });
@@ -127,7 +127,7 @@ test('lo que se cobra del saldo inicial queda como cobro sin factura: figura en 
 });
 
 test('se puede cobrar el saldo inicial solo (sin ninguna factura) y queda registrado', async () => {
-  const r = await invocar('clientes:crear', { nombre: 'Rita', apellido: '', codigo: '', saldo_inicial: '5000' });
+  const r = await invocar('clientes:crear', { nombre: 'Rosa', apellido: '', codigo: '', saldo_inicial: '5000' });
   const c = r.cliente.id;
   assert.equal((await invocar('clientes:registrarPagoGeneral', { cliente_id: c, monto: 2000, metodo_pago: 'Efectivo' })).ok, true);
   assert.equal(saldoDe(c), 3000);
@@ -160,7 +160,7 @@ test('"de dónde sale el total cobrado": un renglón por cliente y método, suma
 });
 
 test('cobrar con cheque exige banco y número, deja el cheque en cartera y no acepta repetidos', async () => {
-  const c = crearCliente(db, 'Fede');
+  const c = crearCliente(db, 'Fabio');
   const p = crearProducto(db, { nombre: 'Matambre', precio: 1000 });
   await crearFactura(c, [{ producto_id: p, cantidad: 10 }]);
   const sin = await invocar('clientes:registrarPagoGeneral', { cliente_id: c, monto: 4000, metodo_pago: 'Cheque', cheque: {} });
@@ -195,7 +195,7 @@ test('la retención por transferencia se genera como gasto, no aplica a efectivo
 });
 
 test('anular un cobro: la factura vuelve a deber, el saldo sube, queda el motivo y no se anulan cheques', async () => {
-  const c = crearCliente(db, 'Hugo');
+  const c = crearCliente(db, 'Hernán');
   const p = crearProducto(db, { nombre: 'Bondiola', precio: 1000 });
   const f = await crearFactura(c, [{ producto_id: p, cantidad: 10 }]);
   await invocar('facturas:registrarPago', { factura_id: f.id, monto: 10000, metodo_pago: 'Mercado Pago' });
@@ -297,23 +297,23 @@ test('los centavos no se pierden: cantidades con decimales y varias facturas dej
 });
 
 test('el negocio del cliente se guarda, se puede editar, y la búsqueda por código/CUIT sigue igual', async () => {
-  const r = await invocar('clientes:crear', { nombre: 'Ana', apellido: 'Rodríguez', negocio: 'Kiosco El Sol', codigo: '' });
+  const r = await invocar('clientes:crear', { nombre: 'Alma', apellido: 'Rodríguez', negocio: 'Kiosco El Sol', codigo: '' });
   assert.equal(r.ok, true);
   assert.equal(r.cliente.negocio, 'Kiosco El Sol');
   // Sin negocio: queda null, no ''.
-  const r2 = await invocar('clientes:crear', { nombre: 'Beto', codigo: '' });
+  const r2 = await invocar('clientes:crear', { nombre: 'Bruno', codigo: '' });
   assert.equal(r2.cliente.negocio, null);
   // Se puede editar.
-  const upd = await invocar('clientes:actualizar', { id: r.cliente.id, nombre: 'Ana', apellido: 'Rodríguez', negocio: 'Almacén Don Pepe', codigo: r.cliente.codigo });
+  const upd = await invocar('clientes:actualizar', { id: r.cliente.id, nombre: 'Alma', apellido: 'Rodríguez', negocio: 'Almacén Don Pepe', codigo: r.cliente.codigo });
   assert.equal(upd.ok, true);
   assert.equal(upd.cliente.negocio, 'Almacén Don Pepe');
   // Se puede sacar (queda en null).
-  const upd2 = await invocar('clientes:actualizar', { id: r.cliente.id, nombre: 'Ana', apellido: 'Rodríguez', negocio: '', codigo: r.cliente.codigo });
+  const upd2 = await invocar('clientes:actualizar', { id: r.cliente.id, nombre: 'Alma', apellido: 'Rodríguez', negocio: '', codigo: r.cliente.codigo });
   assert.equal(upd2.cliente.negocio, null);
 });
 
 test('saldo inicial de un cliente: se suma al saldo, y si se edita después se ajusta por la diferencia (no lo pisa)', async () => {
-  const r = await invocar('clientes:crear', { nombre: 'Elsa', apellido: 'Vega', codigo: '', saldo_inicial: '5000' });
+  const r = await invocar('clientes:crear', { nombre: 'Eva', apellido: 'Ríos', codigo: '', saldo_inicial: '5000' });
   assert.equal(r.ok, true);
   assert.equal(r.cliente.saldo_inicial, 5000);
   assert.equal(r.cliente.saldo, 5000, 'el saldo inicial ya cuenta como saldo, sin necesidad de facturar nada');
@@ -326,7 +326,7 @@ test('saldo inicial de un cliente: se suma al saldo, y si se edita después se a
   const clienteConFactura = (await invocar('clientes:listar')).find((x) => x.id === r.cliente.id);
   cerca(clienteConFactura.saldo, 5000 + factura.total, 'el saldo inicial sigue sumado después de facturar');
   // Editar el saldo inicial más tarde ajusta el saldo por la diferencia, no lo reemplaza (ya puede haber actividad real).
-  const upd = await invocar('clientes:actualizar', { id: r.cliente.id, nombre: 'Elsa', apellido: 'Vega', codigo: r.cliente.codigo, saldo_inicial: '2000' });
+  const upd = await invocar('clientes:actualizar', { id: r.cliente.id, nombre: 'Eva', apellido: 'Ríos', codigo: r.cliente.codigo, saldo_inicial: '2000' });
   assert.equal(upd.ok, true);
   assert.equal(upd.cliente.saldo_inicial, 2000);
   const clienteEditado = (await invocar('clientes:listar')).find((x) => x.id === r.cliente.id);
@@ -335,7 +335,7 @@ test('saldo inicial de un cliente: se suma al saldo, y si se edita después se a
 
 test('segundo WhatsApp de un cliente: se guarda con su nombre y aparece en facturas:listar', async () => {
   const r = await invocar('clientes:crear', {
-    nombre: 'Fede',
+    nombre: 'Fabio',
     apellido: 'Ibarra',
     codigo: '',
     telefono: '3511111111',
@@ -358,19 +358,19 @@ test('segundo WhatsApp de un cliente: se guarda con su nombre y aparece en factu
 });
 
 test('el buscador general encuentra al cliente tanto por su nombre como por el del negocio', async () => {
-  await invocar('clientes:crear', { nombre: 'Carla', apellido: 'Núñez', negocio: 'Despensa La Esquina', codigo: '' });
-  const porPersona = await invocar('buscar:todo', 'Carla Nuñez');
-  assert.ok(porPersona.grupos.clientes.items.some((c) => c.nombre.includes('Carla Núñez')));
+  await invocar('clientes:crear', { nombre: 'Camila', apellido: 'Núñez', negocio: 'Despensa La Esquina', codigo: '' });
+  const porPersona = await invocar('buscar:todo', 'Camila Nuñez');
+  assert.ok(porPersona.grupos.clientes.items.some((c) => c.nombre.includes('Camila Núñez')));
   const porNegocio = await invocar('buscar:todo', 'despensa esquina');
-  assert.ok(porNegocio.grupos.clientes.items.some((c) => c.nombre.includes('Carla Núñez')), 'tiene que encontrarla buscando por el negocio');
+  assert.ok(porNegocio.grupos.clientes.items.some((c) => c.nombre.includes('Camila Núñez')), 'tiene que encontrarla buscando por el negocio');
   assert.ok(porNegocio.grupos.clientes.items.some((c) => c.nombre.includes('Despensa La Esquina')), 'el negocio se muestra entre paréntesis');
 });
 
 test('el código del cliente también se busca (buscador general)', async () => {
-  const c = await invocar('clientes:crear', { nombre: 'Dario', apellido: 'Molina', codigo: 'D99' });
+  const c = await invocar('clientes:crear', { nombre: 'Damián', apellido: 'Molina', codigo: 'D99' });
   assert.equal(c.ok, true);
   const r = await invocar('buscar:todo', 'D99');
-  assert.ok(r.grupos.clientes.items.some((x) => x.nombre.includes('Dario Molina')));
+  assert.ok(r.grupos.clientes.items.some((x) => x.nombre.includes('Damián Molina')));
 });
 
 test('reactivar un cobro anulado lo recrea tal cual, con su fecha, y no se puede reactivar dos veces', async () => {
@@ -444,7 +444,7 @@ test('reactivar una factura anulada la devuelve al estado anterior', async () =>
 });
 
 test('reactivar una factura anulada con devolución saca el pago de la devolución', async () => {
-  const c = crearCliente(db, 'Rita');
+  const c = crearCliente(db, 'Rosa');
   const p = crearProducto(db, { nombre: 'Cuadril', precio: 1000 });
   const f = await crearFactura(c, [{ producto_id: p, cantidad: 10 }]);
   await invocar('facturas:registrarPago', { factura_id: f.id, monto: 10000, metodo_pago: 'Efectivo' });

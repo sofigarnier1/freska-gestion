@@ -23,7 +23,7 @@ test('todas las pantallas leen sin errores con datos de todo tipo cargados', asy
   const dia = hoy();
 
   // Ventas: cliente, producto por kilo pedible por unidad, factura, cobro en efectivo y por banco
-  const cliente = crearCliente(db, 'Ana');
+  const cliente = crearCliente(db, 'Alma');
   const chorizo = crearProducto(db, { nombre: 'Chorizo seco', precio: 9000, unidad: 'kg' });
   db.prepare('UPDATE productos SET pedible_por_unidad = 1, peso_unidad_pedido = 0.2 WHERE id = ?').run(chorizo);
   const asado = crearProducto(db, { nombre: 'Asado', precio: 8000, unidad: 'kg' });

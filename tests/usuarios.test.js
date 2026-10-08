@@ -16,7 +16,7 @@ test.beforeEach(async () => {
 
 test('primer arranque: se crea el administrador y queda logueado; no se puede crear un segundo "primero"', async () => {
   assert.deepEqual(await invocar('usuarios:paraElegir'), []);
-  const r = await invocar('usuarios:crearPrimero', { nombre: 'Ana Admin', pin: 'clave1234' });
+  const r = await invocar('usuarios:crearPrimero', { nombre: 'Alma Admin', pin: 'clave1234' });
   assert.equal(r.ok, true);
   assert.equal(r.usuario.rol, 'admin');
   assert.deepEqual(await invocar('usuarios:sesionActual'), r.usuario);
@@ -38,7 +38,7 @@ test('el administrador puede crear empleados; un empleado no puede crear usuario
 
 test('login: contraseña incorrecta no entra, y con dos usuarios cada uno tiene su propio bloqueo', async () => {
   await invocar('usuarios:crearPrimero', { nombre: 'Admin', pin: 'admin1234' });
-  const emp = await invocar('usuarios:crear', { nombre: 'Ana', pin: 'ana12345', rol: 'empleado' });
+  const emp = await invocar('usuarios:crear', { nombre: 'Alma', pin: 'ana12345', rol: 'empleado' });
   await invocar('usuarios:cerrarSesion');
   const malo = await invocar('usuarios:ingresar', { usuario_id: emp.id, pin: 'incorrecta' });
   assert.equal(malo.ok, false);
@@ -48,7 +48,7 @@ test('login: contraseña incorrecta no entra, y con dos usuarios cada uno tiene 
 
 test('un empleado no puede leer ni tocar Gastos, Caja ni Proveedores', async () => {
   await invocar('usuarios:crearPrimero', { nombre: 'Admin', pin: 'admin1234' });
-  const emp = await invocar('usuarios:crear', { nombre: 'Beto', pin: 'beto1234', rol: 'empleado' });
+  const emp = await invocar('usuarios:crear', { nombre: 'Bruno', pin: 'beto1234', rol: 'empleado' });
   await invocar('usuarios:ingresar', { usuario_id: emp.id, pin: 'beto1234' });
   const g = await invocar('gastos:listar');
   assert.equal(g.ok, false);
@@ -87,7 +87,7 @@ test('un empleado sí puede facturar, cobrar y ver clientes; no puede editar pro
   await invocar('usuarios:crearPrimero', { nombre: 'Admin', pin: 'admin1234' });
   const c = crearCliente(db, 'Cliente Uno');
   const p = crearProducto(db, { nombre: 'Vacío', precio: 1000 });
-  const emp = await invocar('usuarios:crear', { nombre: 'Carla', pin: 'carla123', rol: 'empleado' });
+  const emp = await invocar('usuarios:crear', { nombre: 'Camila', pin: 'carla123', rol: 'empleado' });
   await invocar('usuarios:ingresar', { usuario_id: emp.id, pin: 'carla123' });
   assert.ok(Array.isArray(await invocar('clientes:listar')));
   const f = await invocar('facturas:crear', { cliente_id: c, tipo_precio: 'cliente', items: [{ producto_id: p, cantidad: 2 }] });
@@ -104,7 +104,7 @@ test('un empleado tiene que poner motivo al anular; un administrador no está ob
   const p = crearProducto(db, { nombre: 'Costilla', precio: 1000 });
   const f = await invocar('facturas:crear', { cliente_id: c, tipo_precio: 'cliente', items: [{ producto_id: p, cantidad: 5 }] });
   await invocar('facturas:registrarPago', { factura_id: f.id, monto: 5000, metodo_pago: 'Efectivo' });
-  const emp = await invocar('usuarios:crear', { nombre: 'Dario', pin: 'dario123', rol: 'empleado' });
+  const emp = await invocar('usuarios:crear', { nombre: 'Damián', pin: 'dario123', rol: 'empleado' });
   await invocar('usuarios:ingresar', { usuario_id: emp.id, pin: 'dario123' });
   const idPago = db.prepare('SELECT id FROM pagos WHERE factura_id = ?').get(f.id).id;
   const sinMotivo = await invocar('pagos:anular', { ids: [idPago] });
@@ -138,7 +138,7 @@ test('el aviso de anulaciones desaparece si el administrador reactiva el cobro',
   const admin = await invocar('usuarios:crearPrimero', { nombre: 'Admin', pin: 'admin1234' });
   const c = crearCliente(db, 'Cliente Cuatro');
   const p = crearProducto(db, { nombre: 'Peceto', precio: 1000 });
-  const emp = await invocar('usuarios:crear', { nombre: 'Fede', pin: 'fede1234', rol: 'empleado' });
+  const emp = await invocar('usuarios:crear', { nombre: 'Fabio', pin: 'fede1234', rol: 'empleado' });
   await invocar('usuarios:ingresar', { usuario_id: emp.id, pin: 'fede1234' });
   const f = await invocar('facturas:crear', { cliente_id: c, tipo_precio: 'cliente', items: [{ producto_id: p, cantidad: 5 }] });
   await invocar('facturas:registrarPago', { factura_id: f.id, monto: 5000, metodo_pago: 'Efectivo' });
@@ -170,11 +170,11 @@ test('facturas:listar y pedidos:listar traen el rol de quién cargó/anuló, par
   await invocar('usuarios:crearPrimero', { nombre: 'Admin', pin: 'admin1234' });
   const c = crearCliente(db, 'Cliente Rol');
   const p = crearProducto(db, { nombre: 'Bife', precio: 1000 });
-  const emp = await invocar('usuarios:crear', { nombre: 'Hugo', pin: 'hugo1234', rol: 'empleado' });
+  const emp = await invocar('usuarios:crear', { nombre: 'Hernán', pin: 'hugo1234', rol: 'empleado' });
   await invocar('usuarios:ingresar', { usuario_id: emp.id, pin: 'hugo1234' });
   const f = await invocar('pedidos:crear', { cliente_id: c, items: [{ producto_id: p, cantidad: 1 }] });
   const pedido = (await invocar('pedidos:listar')).find((x) => x.id === f.id);
-  assert.equal(pedido.creado_por_nombre, 'Hugo');
+  assert.equal(pedido.creado_por_nombre, 'Hernán');
   assert.equal(pedido.creado_por_rol, 'empleado');
   const fac = await invocar('facturas:crear', { cliente_id: c, tipo_precio: 'cliente', items: [{ producto_id: p, cantidad: 1 }] });
   let listado = (await invocar('facturas:listar')).find((x) => x.id === fac.id);
@@ -191,7 +191,7 @@ test('la lupa general le esconde a un empleado los grupos que no le corresponden
   assert.ok('clientes' in admin.grupos);
   assert.ok('gastos' in admin.grupos, 'el administrador ve todos los grupos');
   assert.ok('proveedores' in admin.grupos);
-  const emp = await invocar('usuarios:crear', { nombre: 'Nora', pin: 'nora1234', rol: 'empleado' });
+  const emp = await invocar('usuarios:crear', { nombre: 'Noemí', pin: 'nora1234', rol: 'empleado' });
   await invocar('usuarios:ingresar', { usuario_id: emp.id, pin: 'nora1234' });
   const resultado = await invocar('buscar:todo', 'Buscador');
   assert.ok('clientes' in resultado.grupos, 'un empleado sigue viendo clientes');

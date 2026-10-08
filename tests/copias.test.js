@@ -8,7 +8,7 @@ const Database = require('better-sqlite3');
 const copias = require('../src/db/copias');
 
 const carpetaTemporal = () => fs.mkdtempSync(path.join(os.tmpdir(), 'freska-copias-'));
-function baseDeEjemplo(dir, nombres = ['Ana', 'Beto']) {
+function baseDeEjemplo(dir, nombres = ['Alma', 'Bruno']) {
   const ruta = path.join(dir, 'freska.db');
   const db = new Database(ruta);
   db.exec('CREATE TABLE clientes (id INTEGER PRIMARY KEY, n TEXT); CREATE TABLE facturas (id INTEGER PRIMARY KEY); CREATE TABLE productos (id INTEGER PRIMARY KEY);');
@@ -56,7 +56,7 @@ test('dos copias externas el mismo día: la última pisa a la anterior', async (
   fs.mkdirSync(carpeta);
   const hoy = new Date(2026, 8, 24);
   await copias.copiaExterna({ db, carpeta, hoy });
-  db.prepare("INSERT INTO clientes (n) VALUES ('Carla')").run();
+  db.prepare("INSERT INTO clientes (n) VALUES ('Camila')").run();
   await copias.copiaExterna({ db, carpeta, hoy });
   assert.equal(fs.readdirSync(carpeta).length, 1);
   assert.equal(contar(path.join(carpeta, 'freska-ext-2026-09-24.db')), 3);

@@ -78,7 +78,7 @@ test('los productos y métodos iniciales no se vuelven a crear en cada arranque'
 
 test('corregir con qué se pagó rehace la retención y deja registrado quién, cuándo y por qué', async () => {
   await invocar('config:guardarRetencionTransferencia', 3);
-  const c = crearCliente(db, 'Beto');
+  const c = crearCliente(db, 'Bruno');
   const p = crearProducto(db, { nombre: 'Prod2', precio: 1000 });
   await facturaPagada(c, p, 1000, 'Mercado Pago');
   const retenciones = () => db.prepare('SELECT monto FROM gastos WHERE pago_ids IS NOT NULL').all().map((g) => g.monto);
