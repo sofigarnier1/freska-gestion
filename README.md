@@ -79,7 +79,7 @@ docs/              demo y capturas
 
 Lo desarrollé yo, de punta a punta: entendí cómo trabaja el negocio, definí las reglas del dinero y del stock, armé las pantallas, lo probé, lo instalé y lo sigo mejorando con lo que el dueño me va pidiendo.
 
-**Sofía Garnier** · [LinkedIn](https://www.linkedin.com/in/sofia-garnier) · [Portfolio](https://sofigarnier1.github.io)
+**Sofía Garnier** · [LinkedIn](https://www.linkedin.com/in/sofia-garnier) · [Portfolio](https://sofia-garnier.vercel.app)
 
 ## Licencia
 
