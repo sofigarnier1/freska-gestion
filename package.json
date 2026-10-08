@@ -1,0 +1,46 @@
+{
+  "name": "freska-app",
+  "version": "0.9.12",
+  "description": "FRESKA Gestión: pedidos, facturas, cobros, cheques, gastos, cierre de caja y proveedores",
+  "main": "src/main/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist:win": "electron-builder --win --x64",
+    "test": "node tests/correr.js"
+  },
+  "author": "Sofía Garnier",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "@electron/rebuild": "^4.2.0",
+    "electron": "^44.4.3",
+    "electron-builder": "^26.15.3"
+  },
+  "dependencies": {
+    "better-sqlite3": "^13.0.3",
+    "electron-updater": "^6.8.9"
+  },
+  "build": {
+    "appId": "com.freska.gestion",
+    "productName": "FRESKA Gestión",
+    "files": [
+      "src/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "artifactName": "FRESKA-Gestion-Setup-${version}.exe"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+node_modules/
+dist/
+out/
+*.db
+*.xlsx
+data.plist
+.DS_Store

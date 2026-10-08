@@ -1,0 +1,7073 @@
+:root {
+  --color-bg: #faf6f2;
+  --color-panel: #ffffff;
+  --color-border: #e8e0d6;
+  --color-border-strong: #d8cdc0;
+  --color-text: #2b2320;
+  --color-muted: #8a7d70;
+  --color-accent: #e5342b;
+  --color-accent-hover: #c9291f;
+  --color-accent-soft: #fdeceb;
+  /* Rojo de los botones (acción principal, +, tacho): más parecido al rojo puro del logo que el
+     --color-accent (que tiene bastante naranja mezclado) — a propósito distinto, se pidió que los
+     botones se acerquen al logo pero el resto de los acentos (pestañas activas, "Salidas", badges) sigan igual. */
+  --color-boton: #e2010d;
+  --color-boton-hover: #b8000a;
+  --color-secondary: #1c4e9e;
+  --color-secondary-hover: #163f80;
+  --color-secondary-soft: #eaf0fa;
+  --color-tint: #f6f0e9;
+  --color-row-hover: #fbf8f4;
+  --color-wsp-soft: #e6f5ea;
+  --color-badge-pendiente-bg: #fbe6d4;
+  --color-badge-pendiente-text: #a05a00;
+  --color-badge-pagada-bg: #dbe9d8;
+  --color-badge-pagada-text: #2f6b2f;
+  --color-badge-parcial-bg: #fdeecb;
+  --color-badge-parcial-text: #8a6d00;
+  --color-badge-anulada-bg: #ece7e2;
+  --color-badge-anulada-text: #6b6259;
+  --color-toast-bg: #2b2320;
+  --color-overlay: rgba(43, 35, 32, 0.45);
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-pill: 999px;
+  --shadow-sm: 0 1px 2px rgba(43, 35, 32, 0.06);
+  --shadow-md: 0 4px 14px rgba(43, 35, 32, 0.08);
+  font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark; /* los controles nativos (autocompletado, listas, barras) también en oscuro */
+    --color-bg: #1c1613;
+    --color-panel: #26201c;
+    --color-border: #3c332c;
+    --color-border-strong: #4c4038;
+    --color-text: #f2ece5;
+    --color-muted: #b3a598;
+    --color-accent: #ff6a5e;
+    --color-accent-hover: #ff8377;
+    --color-accent-soft: #3a2420;
+    --color-boton: #ff3b2f;
+    --color-boton-hover: #ff5f54;
+    --color-secondary: #7fa8ea;
+    --color-secondary-hover: #9dbdf0;
+    --color-secondary-soft: #1c2a3f;
+    --color-tint: #332b25;
+    --color-row-hover: #2c2520;
+    --color-wsp-soft: #16301f;
+    --color-badge-pendiente-bg: #3d2c14;
+    --color-badge-pendiente-text: #e0a34d;
+    --color-badge-pagada-bg: #1e2f1e;
+    --color-badge-pagada-text: #7fbf7f;
+    --color-badge-parcial-bg: #3a2f10;
+    --color-badge-parcial-text: #d9b84d;
+    --color-badge-anulada-bg: #332e29;
+    --color-badge-anulada-text: #a89f95;
+    --color-toast-bg: #40352c;
+    --color-overlay: rgba(0, 0, 0, 0.65);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #1c1613;
+  --color-panel: #26201c;
+  --color-border: #3c332c;
+  --color-border-strong: #4c4038;
+  --color-text: #f2ece5;
+  --color-muted: #b3a598;
+  --color-accent: #ff6a5e;
+  --color-accent-hover: #ff8377;
+  --color-accent-soft: #3a2420;
+  --color-boton: #ff3b2f;
+  --color-boton-hover: #ff5f54;
+  --color-secondary: #7fa8ea;
+  --color-secondary-hover: #9dbdf0;
+  --color-secondary-soft: #1c2a3f;
+  --color-tint: #332b25;
+  --color-row-hover: #2c2520;
+  --color-wsp-soft: #16301f;
+  --color-badge-pendiente-bg: #3d2c14;
+  --color-badge-pendiente-text: #e0a34d;
+  --color-badge-pagada-bg: #1e2f1e;
+  --color-badge-pagada-text: #7fbf7f;
+  --color-badge-parcial-bg: #3a2f10;
+  --color-badge-parcial-text: #d9b84d;
+  --color-badge-anulada-bg: #332e29;
+  --color-badge-anulada-text: #a89f95;
+  --color-toast-bg: #40352c;
+  --color-overlay: rgba(0, 0, 0, 0.65);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* La app nunca fijaba un tamaño de letra base: cualquier texto sin una regla propia (como los `<span>`
+   de "Fondo inicial" en Cierre del día, o las celdas `<td>` de cualquier tabla) usaba el tamaño por
+   default del navegador (16px), bastante más grande que el resto de la letra de la app (12-15px) — de
+   ahí que en varias pantallas se vieran tamaños desparejos. 14px es el tamaño que ya usa la mayoría del
+   texto suelto de la app; todo lo que tiene su propio tamaño (títulos, botones, tablas, etiquetas en
+   mayúscula) sigue igual porque su regla es más específica que esta. */
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-size: 14px;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Encabezado: una sola franja fija arriba (logo, botón de mostrar/ocultar el menú y los
+   iconos de la derecha). La navegación en sí (los 4 grupos y sus páginas) vive en la barra lateral
+   `#sidebar`, más abajo. Después de muchas vueltas intentando que una barra horizontal hiciera de las
+   dos cosas (grupo + página) a la vez, terminamos separándolas del todo: la barra lateral no tiene el
+   problema de "ancho" de una barra horizontal (su ancho es fijo, no depende de la ventana) y se puede
+   ocultar cuando estorba. */
+header {
+  background: var(--color-panel);
+  box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  padding: 0 16px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 58px;
+}
+
+.logo-freska-header {
+  height: 26px;
+  width: auto;
+  flex-shrink: 0;
+}
+
+.btn-menu-lateral {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--color-text);
+  cursor: pointer;
+  padding: 8px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-menu-lateral:hover {
+  background: var(--color-tint);
+}
+
+.header-derecha {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* ---------- Cuerpo: barra lateral + contenido ---------- */
+.cuerpo {
+  display: flex;
+  align-items: flex-start;
+}
+
+#sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  position: sticky;
+  top: 58px;
+  height: calc(100vh - 58px);
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: var(--color-panel);
+  border-right: 1px solid var(--color-border);
+  padding: 14px 10px;
+  transition: width 0.18s ease;
+}
+
+#sidebar.colapsada {
+  width: 60px;
+  padding: 14px 8px;
+}
+
+.nav-grupos {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.grupo-boton {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 9px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--color-text);
+  cursor: pointer;
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.grupo-boton:hover {
+  background: var(--color-tint);
+}
+
+.grupo-boton svg {
+  flex-shrink: 0;
+  color: var(--color-muted);
+}
+
+.grupo-boton .texto {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.grupo-boton .flecha {
+  font-size: 10px;
+  color: var(--color-muted);
+  transition: transform 0.15s ease;
+  flex-shrink: 0;
+}
+
+.grupo.abierto .grupo-boton .flecha {
+  transform: rotate(90deg);
+}
+
+.grupo-boton.active {
+  color: var(--color-accent);
+}
+
+.grupo-boton.active svg {
+  color: var(--color-accent);
+}
+
+#sidebar.colapsada .grupo-boton {
+  justify-content: center;
+  padding: 10px 0;
+}
+
+#sidebar.colapsada .grupo-boton .texto,
+#sidebar.colapsada .grupo-boton .flecha,
+#sidebar.colapsada .grupo .sublista {
+  display: none;
+}
+
+.sublista {
+  list-style: none;
+  margin: 2px 0 6px;
+  padding: 0;
+  display: none;
+}
+
+.grupo.abierto .sublista {
+  display: block;
+}
+
+.sublista li {
+  margin: 0;
+}
+
+.sublista button {
+  width: 100%;
+  display: block;
+  text-align: left;
+  background: none;
+  border: none;
+  font-family: inherit;
+  padding: 7px 8px 7px 38px;
+  margin: 1px 0;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  color: var(--color-muted);
+  cursor: pointer;
+  position: relative;
+  white-space: nowrap;
+}
+
+.sublista button:hover {
+  background: var(--color-tint);
+  color: var(--color-text);
+}
+
+.sublista button.active {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+/* Menú corto que aparece al lado de un ícono cuando la barra está achicada y ese grupo tiene varias
+   páginas: reaprovecha la `.sublista` real del grupo (la desplaza acá con JS y la devuelve a su lugar
+   al cerrarse), así no hay que duplicar ni los botones ni sus manejadores de clic. */
+.flyout {
+  position: fixed;
+  min-width: 170px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  z-index: 30;
+  display: none;
+}
+
+.flyout.visible {
+  display: block;
+}
+
+.flyout-titulo {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  padding: 6px 10px 4px;
+}
+
+.flyout .sublista {
+  display: block;
+  margin: 0;
+}
+
+.flyout .sublista button {
+  padding: 8px 10px;
+}
+
+/* Nombre del grupo arriba del título de cada pantalla (por ejemplo "VENTAS" arriba de "Pedidos de
+   hoy"), para no perder de vista en qué sección estás. Se deja vacío (y por eso no ocupa lugar, ver
+   `:empty`) cuando el grupo no tiene más que una página, como Estadísticas: repetiría el mismo texto. */
+.miga-grupo {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 20px 32px 0;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+}
+
+.miga-grupo:empty {
+  display: none;
+}
+
+.miga-grupo + main {
+  padding-top: 14px;
+}
+
+.menu-usuario {
+  position: relative;
+}
+
+.btn-menu-usuario {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  background: var(--color-tint);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 0;
+}
+
+.btn-menu-usuario:hover {
+  color: var(--color-text);
+  border-color: var(--color-border-strong);
+}
+
+.menu-usuario-lista {
+  display: none;
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  min-width: 200px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  z-index: 50;
+  flex-direction: column;
+}
+
+.menu-usuario-lista.visible {
+  display: flex;
+}
+
+.menu-usuario-lista button {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 10px 12px;
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  width: 100%;
+}
+
+.menu-usuario-lista button:hover {
+  background: var(--color-tint);
+}
+
+.menu-usuario-lista #btn-cerrar-sesion {
+  color: var(--color-accent-hover);
+}
+
+.menu-usuario-lista hr {
+  border: none;
+  border-top: 1px solid var(--color-border);
+  margin: 6px 4px;
+}
+
+.acciones-factura,
+.acciones-cliente {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.acciones-factura,
+.acciones-cliente,
+.celda-estado {
+  vertical-align: middle;
+}
+
+.menu-fila {
+  position: relative;
+  display: inline-block;
+}
+
+.btn-whatsapp-fila {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+  vertical-align: middle;
+}
+
+.btn-whatsapp-fila:hover {
+  background: var(--color-wsp-soft);
+}
+
+.btn-pago-fila {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  vertical-align: middle;
+}
+
+.btn-pago-fila:hover {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  background: var(--color-secondary-soft);
+}
+
+.btn-menu-fila {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-menu-fila:hover {
+  background: var(--color-tint);
+  color: var(--color-text);
+}
+
+.menu-fila-lista {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  right: 0;
+  min-width: 170px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  z-index: 20;
+  flex-direction: column;
+}
+
+.menu-fila-lista.visible {
+  display: flex;
+}
+
+.menu-fila-lista.menu-fila-lista-arriba {
+  top: auto;
+  bottom: calc(100% + 4px);
+}
+
+.menu-fila-lista button {
+  background: none;
+  border: none;
+  text-align: left;
+  padding: 9px 10px;
+  font-size: 13.5px;
+  color: var(--color-text);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  width: 100%;
+}
+
+.menu-fila-lista button:hover {
+  background: var(--color-tint);
+}
+
+.menu-fila-lista .anular-factura,
+.menu-fila-lista .eliminar-pedido,
+.menu-fila-lista .quitar-gasto,
+.menu-fila-lista .quitar-cheque,
+.menu-fila-lista .quitar-compra,
+.menu-fila-lista .quitar-pago-proveedor,
+.menu-fila-lista .quitar-cuenta,
+.menu-fila-lista .quitar,
+.menu-fila-lista .anular-cobro-factura {
+  color: var(--color-accent-hover);
+}
+
+main {
+  padding: 32px;
+  max-width: 1080px;
+  margin: 0 auto;
+}
+
+h2 {
+  margin: 0 0 16px;
+  font-size: 19px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+
+h2 + h2,
+table + h2,
+.panel + h2 {
+  margin-top: 36px;
+}
+
+.titulo-colapsable {
+  cursor: pointer;
+  user-select: none;
+  width: fit-content;
+}
+
+.icono-colapsar {
+  display: inline-block;
+  color: var(--color-muted);
+  font-size: 0.7em;
+  margin-left: 8px;
+}
+
+/* ---------- Buttons ---------- */
+
+button {
+  font-family: inherit;
+}
+
+button.primary,
+.btn-group button.primary,
+.toolbar button.primary {
+  background: var(--color-boton);
+  color: #fff;
+  border: 1px solid var(--color-boton);
+  padding: 10px 18px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: var(--shadow-sm);
+  transition: background 0.15s ease, transform 0.05s ease;
+}
+
+button.primary:hover {
+  background: var(--color-boton-hover);
+  border-color: var(--color-boton-hover);
+}
+
+button.primary:active {
+  transform: translateY(1px);
+}
+
+/* Botones primary dentro de una fila de tabla: misma acción, tamaño más chico para no dominar la fila */
+td button.primary {
+  padding: 9px 16px;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+/* Default (secondary/outline) buttons: Editar, Cancelar, Ver, toggles, etc. */
+button:not(.primary):not(.toggle):not(nav button):not(.btn-volver):not(.btn-menu-lateral):not(.toggle-ver-pin):not(.btn-menu-usuario):not(.item-menu):not(.btn-menu-fila):not(.btn-whatsapp-fila):not(.btn-pago-fila):not(.ver-item-factura-pendiente):not(.btn-borrar-cliente-directo):not(.quitar-linea-pago):not(.btn-agregar-linea-pago):not(.btn-peligro):not(.selector-fecha-icono):not(.calendario-nav):not(.calendario-dia):not(.calendario-limpiar):not(.calendario-hoy):not(.resumen-pedido-hoy):not(.autocomplete-buscador-icono):not(.btn-ver-preview):not(.btn-subir):not(.btn-redondo):not(.chip-retiro):not(.chip-retiro-x):not(.calendario-atajo):not(.btn-limpiar-campo):not(.pagar-proveedor-fila):not(.compra-proveedor-fila):not(.stock-producto-fila):not(.enlace-boton):not(.btn-ayuda-est):not(.buscador-item):not(.aviso-item):not(.aviso-marca):not(.tipo-opcion):not(.btn-ojo) {
+  background: var(--color-panel);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+button:not(.primary):not(.toggle):not(nav button):not(.btn-volver):not(.btn-menu-lateral):not(.toggle-ver-pin):not(.btn-menu-usuario):not(.item-menu):not(.btn-menu-fila):not(.btn-whatsapp-fila):not(.btn-pago-fila):not(.ver-item-factura-pendiente):not(.btn-borrar-cliente-directo):not(.quitar-linea-pago):not(.btn-agregar-linea-pago):not(.btn-peligro):not(.cancelar):not(.cancelar-ficha-cliente):not(.quitar-linea):not(#modal-cancelar):not(#btn-cancelar-consulta):not(#btn-cancelar-envio):not(#btn-cancelar-edicion):not(#btn-cancelar-cambio-pin):not(#btn-limpiar-factura):not(#btn-limpiar-pedido):not(#btn-limpiar-linea):not(.selector-fecha-icono):not(.calendario-nav):not(.calendario-dia):not(.calendario-limpiar):not(.calendario-hoy):not(.resumen-pedido-hoy):not(.autocomplete-buscador-icono):not(.btn-ver-preview):not(.btn-subir):not(.btn-redondo):not(.chip-retiro):not(.chip-retiro-x):not(.calendario-atajo):not(.btn-limpiar-campo):not(.pagar-proveedor-fila):not(.compra-proveedor-fila):not(.stock-producto-fila):not(.enlace-boton):not(.btn-ayuda-est):not(.buscador-item):not(.aviso-item):not(.aviso-marca):not(.tipo-opcion):not(.btn-limpiar):not(.btn-ojo):hover {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  background: var(--color-secondary-soft);
+}
+
+/* La cadena button:not(...) de arriba (ver CLAUDE.md, "trampa de especificidad en botones")
+   le gana en especificidad a un selector normal como ".btn-group button", así que hace falta
+   !important para igualar el tamaño de "Cancelar" (default) al de "Guardar" (.primary) cuando
+   van juntos en un .btn-group. */
+.btn-group button:not(.primary) {
+  padding: 10px 18px !important;
+  font-size: 14px !important;
+  font-weight: 600 !important;
+}
+
+.btn-borrar-cliente-directo {
+  background: var(--color-accent-soft);
+  color: var(--color-accent-hover);
+  border: 1px solid var(--color-accent);
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.btn-borrar-cliente-directo:hover {
+  background: var(--color-accent);
+  color: #fff;
+}
+
+.btn-peligro {
+  background: var(--color-panel);
+  color: var(--color-accent-hover);
+  border: 1px solid var(--color-border-strong);
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 500;
+}
+
+.btn-peligro:hover {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent);
+}
+
+#modal-cancelar:hover,
+#btn-cancelar-consulta:hover,
+#btn-cancelar-envio:hover,
+#btn-cancelar-edicion:hover,
+#btn-cancelar-cambio-pin:hover,
+.btn-limpiar:hover,
+#btn-limpiar-factura:hover,
+#btn-limpiar-pedido:hover,
+#btn-limpiar-linea:hover,
+.cancelar:hover,
+.cancelar-ficha-cliente:hover,
+.quitar-linea:hover {
+  color: var(--color-accent-hover);
+  border-color: var(--color-accent);
+}
+
+/* Regla de la app: botón blanco que hace o abre algo = azul al pasar el mouse (cadena button:not(...) y clases propias);
+   botón que limpia, cancela, borra o da de baja = rojo (esta regla); los principales (Guardar, +) quedan rojos de siempre.
+   "Limpiar" y "Cancelar": rojo al pasar el mouse en todos los formularios. La clase sola pierde contra la cadena button:not(...) de arriba
+   (solo ganaban los que tenían un id propio en la lista), por eso lleva !important. */
+.btn-limpiar:hover,
+.cancelar:hover,
+.cancelar-ficha-cliente:hover,
+.quitar-linea:hover,
+button[id^='btn-cancelar']:hover,
+button[id^='btn-limpiar']:hover,
+.btn-baja-cliente:hover,
+#baja-proveedor:hover {
+  color: var(--color-accent-hover) !important;
+  border-color: var(--color-accent) !important;
+  background: var(--color-panel) !important;
+}
+
+/* Botones de acción blancos (Interés, Reintegro): azul al pasar el mouse, el azul de las pastillas. Lo mismo: !important por la cadena. */
+.btn-accion:hover {
+  color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+  background: var(--color-secondary-soft) !important;
+}
+
+/* Dentro de un .btn-group "Limpiar" no va en negrita (el resto de los botones sí): queda como los otros Limpiar. */
+.btn-group button.btn-limpiar {
+  font-weight: 500 !important;
+}
+
+.btn-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: nowrap;
+}
+
+/* ---------- Toolbar (action button + search, side by side) ---------- */
+
+.toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+/* Desplegables de ordenar y filtrar las listas (Clientes, Proveedores): del alto de un casillero y del ancho de su texto. */
+/* El buscador y el botón Filtros van juntos, a la izquierda; el botón de agregar queda a la derecha. */
+.busqueda-filtros {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1 1 320px;
+  max-width: 520px;
+}
+
+.busqueda-filtros .buscador {
+  flex: 1 1 auto;
+}
+
+/* Convención de las listas (2026-09-23): el buscador (con sus filtros) va SIEMPRE arriba a la derecha de
+   la tabla, y el "+ Agregar" a la izquierda. En una barra con buscador suelto, `margin-left:auto` lo manda a la
+   derecha (lo que siga —los filtros— va detrás). Pantallas nuevas: seguir este criterio. */
+.toolbar > .buscador,
+.toolbar-junta > .buscador {
+  margin-left: auto;
+}
+
+.toolbar > .busqueda-filtros {
+  margin-left: auto;
+  justify-content: flex-end;
+}
+
+/* Botón "Filtros" junto al buscador: abre un panel con Ordenar y Ver (Clientes, Proveedores). */
+.filtros-lista {
+  position: relative;
+}
+
+.btn-filtros {
+  height: 36px;
+  padding-top: 0;
+  padding-bottom: 0;
+  white-space: nowrap;
+}
+
+.btn-filtros:hover,
+.btn-filtros.con-filtros {
+  color: var(--color-secondary) !important;
+  border-color: var(--color-secondary) !important;
+}
+
+.btn-filtros:hover {
+  background: var(--color-secondary-soft) !important;
+}
+
+.filtros-cuenta {
+  display: inline-block;
+  min-width: 16px;
+  margin-left: 4px;
+  padding: 0 4px;
+  border-radius: var(--radius-pill);
+  background: var(--color-secondary);
+  color: #fff;
+  font-size: 11px;
+  line-height: 16px;
+  text-align: center;
+}
+
+.filtros-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  min-width: 280px;
+  padding: 12px 14px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.filtros-panel[hidden] {
+  display: none;
+}
+
+.filtros-grupo + .filtros-grupo {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+}
+
+.filtros-titulo {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 11.5px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.filtros-opcion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 4px 0;
+  font-size: 13.5px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.filtros-opcion input[type='radio'] {
+  width: auto;
+  margin: 0;
+}
+
+.detalle-ultima-compra {
+  margin-top: 2px;
+  font-size: 12px;
+}
+
+.toolbar .buscador {
+  flex: 1 1 220px;
+  max-width: 260px;
+  margin-bottom: 0;
+}
+
+/* ---------- Forms & inputs ---------- */
+
+select,
+input[type='text'],
+input[type='number'],
+input[type='tel'],
+input[type='date'],
+input[type='password'],
+textarea {
+  font-family: inherit;
+  padding: 9px 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  background: var(--color-panel);
+  color: var(--color-text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+/* Al elegir una sugerencia (autocompletado del navegador) el campo se pintaba de blanco/celeste en modo
+   oscuro: se le deja el fondo y el texto de siempre. */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+select:-webkit-autofill,
+textarea:-webkit-autofill {
+  -webkit-text-fill-color: var(--color-text);
+  caret-color: var(--color-text);
+  box-shadow: 0 0 0 1000px var(--color-panel) inset !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+
+/* Sin flechitas de subir/bajar en los campos numéricos (no aportan y ensucian) */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
+select:focus,
+input:focus,
+textarea:focus {
+  outline: none;
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px var(--color-secondary-soft);
+}
+
+.input-moneda {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-panel);
+  overflow: hidden;
+}
+
+.input-moneda span {
+  padding: 0 0 0 12px;
+  color: var(--color-muted);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.input-moneda input {
+  border: none !important;
+  box-shadow: none !important;
+  padding-left: 4px !important;
+  min-width: 0;
+}
+
+/* Como `.input-moneda`, pero con el símbolo después del número (6%) en vez de antes ($6): el signo queda
+   siempre a la vista, no se pierde al escribir como pasaba con un simple `placeholder="%"`. */
+.input-porcentaje {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-panel);
+  overflow: hidden;
+}
+
+.input-porcentaje span {
+  padding: 0 12px 0 0;
+  color: var(--color-muted);
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.input-porcentaje input {
+  border: none !important;
+  box-shadow: none !important;
+  padding-right: 4px !important;
+  text-align: right;
+  min-width: 0;
+}
+
+/* Como `.input-porcentaje`, para una cantidad con su unidad adentro del casillero (kg, unidades) en vez
+   de como una etiqueta suelta al lado — así no hace falta un cuadrado aparte solo para la unidad. */
+.input-unidad {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-panel);
+  overflow: hidden;
+}
+
+.input-unidad span {
+  padding: 0 10px 0 0;
+  color: var(--color-muted);
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.input-unidad input {
+  border: none !important;
+  box-shadow: none !important;
+  padding-left: 10px !important;
+  min-width: 0;
+  width: 100%;
+}
+
+/* Tablas de líneas editables (Pedidos, Facturas): mismo formato que Compras (ver `.tabla-compra`), con el
+   autocomplete ocupando toda la celda. El "+" de agregar fila va en el encabezado, arriba de los "−". */
+.tabla-pedido .autocomplete-buscador {
+  width: 100%;
+}
+
+.tabla-pedido .autocomplete-buscador-campo {
+  padding-right: 0;
+}
+
+.tabla-pedido td:nth-child(2) {
+  width: 130px;
+}
+
+/* Prueba en Pedidos: los casilleros de las líneas sin caja propia, solo una línea abajo que se marca al
+   enfocar — para que queden la tabla y el panel como únicos cuadrados. */
+.tabla-sin-cajas .autocomplete-buscador-campo,
+.tabla-sin-cajas .input-unidad,
+.tabla-sin-cajas .input-moneda,
+.tabla-sin-cajas input[type='text'],
+.tabla-sin-cajas input[type='number'],
+.tabla-sin-cajas select {
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.tabla-sin-cajas .autocomplete-buscador-campo:focus-within,
+.tabla-sin-cajas .input-unidad:focus-within,
+.tabla-sin-cajas .input-moneda:focus-within,
+.tabla-sin-cajas input[type='text']:focus,
+.tabla-sin-cajas input[type='number']:focus,
+.tabla-sin-cajas select:focus {
+  border-bottom-color: var(--color-secondary);
+  box-shadow: none;
+}
+
+.tabla-sin-cajas .input-unidad:focus-within {
+  outline: none;
+}
+
+.tabla-factura td:nth-child(3) {
+  width: 140px;
+}
+
+.tabla-factura td.subtotal-linea {
+  width: 72px;
+  padding-right: 4px;
+  font-weight: 700;
+  white-space: nowrap;
+  text-align: left;
+}
+
+.buscador {
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 16px;
+  display: block;
+}
+
+form.panel {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+  margin-bottom: 24px;
+}
+
+.unidad-label {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+/* ---------- Panels & tables ---------- */
+
+.panel {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 22px;
+  margin-bottom: 32px;
+  box-shadow: var(--shadow-sm);
+}
+
+.factura-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+  flex-wrap: wrap;
+}
+
+.linea-codigo {
+  width: 90px;
+}
+
+.factura-header label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+}
+
+.autocomplete-buscador {
+  position: relative;
+  width: 240px;
+}
+
+.autocomplete-buscador-campo {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  padding-right: 8px;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.autocomplete-buscador-campo:focus-within {
+  border-color: var(--color-secondary);
+  box-shadow: 0 0 0 3px var(--color-secondary-soft);
+}
+
+.autocomplete-buscador-campo input {
+  flex: 1;
+  min-width: 0;
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.autocomplete-buscador-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+}
+
+.autocomplete-buscador-icono:hover {
+  background: var(--color-tint);
+  color: var(--color-text);
+}
+
+.autocomplete-buscador-campo input:disabled,
+.autocomplete-buscador-icono:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.sugerencias-lista {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  width: 100%;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+  max-height: 200px;
+  overflow-y: auto;
+  z-index: 10;
+}
+
+.sugerencia-item {
+  padding: 9px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.sugerencia-item:hover,
+.sugerencia-item.resaltada {
+  background: var(--color-tint);
+}
+
+.factura-total {
+  font-size: 18px;
+  font-weight: 700;
+  margin: 18px 0;
+}
+
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.panel table {
+  margin-bottom: 18px;
+}
+
+.angosto {
+  max-width: 520px;
+}
+
+.angosto th:last-child,
+.angosto td:last-child {
+  width: 1%;
+  white-space: nowrap;
+}
+
+/* Anchos fijos (en %, no px, para que la tabla nunca necesite ser más ancha
+   que su contenedor sea cual sea el tamaño de la ventana): sin esto, al entrar
+   en modo edición el <input> de código (sin ancho propio, así que el navegador
+   le da su tamaño por default) infla esa columna, y el <select> de "Se vende"
+   termina más angosto de lo que necesita para mostrar "Por peso (kg)" completo. */
+.tabla-productos {
+  table-layout: fixed;
+}
+
+/* 7 columnas: código, nombre, precio cliente, precio CF, se vende, hay y acciones. La última lleva el botón
+   "Stock" además del ⋮ (antes solo el ⋮). Va en px fijo, no en %: con table-layout: fixed el `min-width` de
+   una columna no se respeta (el navegador solo mira `width`), así que un % con min-width como red de
+   seguridad se queda corto en una ventana angosta y el botón se sale de la celda. */
+.tabla-productos th:nth-child(1), .tabla-productos td:nth-child(1) { width: 8%; }
+.tabla-productos th:nth-child(2), .tabla-productos td:nth-child(2) { width: 22%; }
+.tabla-productos th:nth-child(3), .tabla-productos td:nth-child(3),
+.tabla-productos th:nth-child(4), .tabla-productos td:nth-child(4) { width: 14%; white-space: nowrap; }
+.tabla-productos th:nth-child(5), .tabla-productos td:nth-child(5) { width: 14%; }
+.tabla-productos th:nth-child(6), .tabla-productos td:nth-child(6) { width: 14%; }
+.tabla-productos th:last-child, .tabla-productos td:last-child { width: 162px; text-align: right; white-space: nowrap; padding-left: 4px; padding-right: 16px; }
+.tabla-productos td, .tabla-productos th { padding-left: 16px; padding-right: 16px; }
+.tabla-productos tbody td { vertical-align: middle; padding-top: 14px; padding-bottom: 14px; }
+
+th, td {
+  text-align: left;
+  padding: 12px 14px;
+  border-bottom: 1px solid var(--color-border);
+  vertical-align: middle;
+  font-size: 14px;
+}
+
+td input[type='text'],
+td input[type='number'],
+td select,
+td .input-moneda {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+th {
+  background: var(--color-tint);
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  font-weight: 700;
+}
+
+th:first-child {
+  border-top-left-radius: var(--radius-sm);
+}
+
+th:last-child {
+  border-top-right-radius: var(--radius-sm);
+}
+
+tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.fila-clickeable {
+  cursor: pointer;
+}
+
+.icono-fila {
+  display: inline-block;
+  width: 1.2em;
+  margin-right: 4px;
+  text-align: center;
+  color: var(--color-muted);
+  font-size: 0.8em;
+}
+
+/* Una sola flecha (▾) que se da vuelta al abrir: ▴ y ▾ son caracteres distintos y la tipografía
+   los dibuja de tamaños diferentes. */
+.icono-fila.abierto,
+.icono-colapsar.abierto {
+  transform: rotate(180deg);
+}
+
+button:focus-visible,
+.titulo-colapsable:focus-visible,
+input[type='checkbox']:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: 2px;
+}
+
+.fila-clickeable:focus-visible {
+  outline: 2px solid var(--color-secondary);
+  outline-offset: -2px;
+}
+
+tbody tr:hover td {
+  background: var(--color-row-hover);
+}
+
+/* ---------- Badges ---------- */
+
+.badge {
+  display: inline-block;
+  padding: 4px 11px;
+  border-radius: var(--radius-pill);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.badge-pendiente {
+  background: var(--color-badge-pendiente-bg);
+  color: var(--color-badge-pendiente-text);
+}
+
+.badge-pagada {
+  background: var(--color-badge-pagada-bg);
+  color: var(--color-badge-pagada-text);
+}
+
+.badge-parcial {
+  background: var(--color-badge-parcial-bg);
+  color: var(--color-badge-parcial-text);
+}
+
+.badge-anulada {
+  background: var(--color-badge-anulada-bg);
+  color: var(--color-badge-anulada-text);
+  text-decoration: line-through;
+}
+
+.badge-baja {
+  background: var(--color-badge-anulada-bg);
+  color: var(--color-badge-anulada-text);
+}
+
+.resumen-pedido-hoy {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  background: var(--color-tint);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  text-align: left;
+  font-family: inherit;
+  color: var(--color-text);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.resumen-pedido-hoy:hover {
+  border-color: var(--color-secondary);
+  box-shadow: var(--shadow-sm);
+}
+
+.resumen-pedido-hoy-icono {
+  font-size: 22px;
+  line-height: 1;
+  flex-shrink: 0;
+}
+
+.resumen-pedido-hoy-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.resumen-pedido-hoy-titulo {
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.resumen-pedido-hoy-detalle {
+  color: var(--color-muted);
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+
+.pago-lineas {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.pago-linea {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Datos del cheque de un cobro (banco, número, fecha de cobro): debajo del monto y el método. */
+.pago-cheque {
+  flex: 0 0 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pago-cheque[hidden] {
+  display: none;
+}
+
+.pago-cheque input {
+  flex: 1 1 110px;
+  min-width: 0;
+  padding: 7px 10px;
+  font-size: 13px;
+}
+
+.pago-linea .input-moneda {
+  flex: 0 0 114px;
+  min-width: 0;
+  height: 42px;
+}
+
+.pago-linea .input-moneda input {
+  height: 100%;
+}
+
+.pago-linea .metodo-pago {
+  flex: 0 0 114px;
+  min-width: 0;
+  height: 42px;
+}
+
+.ficha-cliente-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 18px;
+}
+
+.ficha-cliente-header h2 {
+  margin: 0;
+}
+
+.ficha-cliente-header .badge {
+  font-size: 14px;
+  font-weight: 700;
+  padding: 7px 16px;
+}
+
+.error-msg {
+  color: var(--color-accent-hover);
+  font-size: 13px;
+  background: var(--color-accent-soft);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  margin: 0 0 16px;
+}
+
+/* ---------- Manual de uso ---------- */
+
+.manual-indice {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 32px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.manual-indice a {
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-text);
+  text-decoration: none;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  padding: 7px 14px;
+}
+
+.manual-indice a:hover {
+  background: var(--color-tint);
+}
+
+.manual-contenido {
+  max-width: 640px;
+}
+
+.manual-contenido section {
+  margin-bottom: 40px;
+  scroll-margin-top: 16px;
+}
+
+.manual-contenido section:last-child {
+  margin-bottom: 0;
+}
+
+.manual-contenido h3 {
+  font-family: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  margin: 0 0 10px;
+  color: var(--color-accent);
+}
+
+.manual-contenido p {
+  margin: 0 0 12px;
+  line-height: 1.55;
+}
+
+.manual-contenido p strong {
+  display: block;
+  margin: 20px 0 6px;
+  font-size: 14.5px;
+}
+
+.manual-contenido section > p:first-of-type,
+.manual-contenido p strong:first-child {
+  margin-top: 0;
+}
+
+.manual-contenido em {
+  font-style: normal;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.manual-contenido ol,
+.manual-contenido ul {
+  margin: 0 0 14px;
+  padding-left: 22px;
+  line-height: 1.7;
+}
+
+.manual-contenido table {
+  margin-bottom: 14px;
+}
+
+.manual-tip {
+  background: var(--color-secondary-soft);
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 14px;
+  line-height: 1.5;
+  margin-top: 16px;
+}
+
+.manual-tip strong {
+  display: block;
+  color: var(--color-secondary);
+  font-size: 13.5px;
+  margin-bottom: 3px;
+}
+
+.manual-tip.alerta {
+  background: var(--color-accent-soft);
+}
+
+.manual-tip.alerta strong {
+  color: var(--color-accent-hover);
+}
+
+/* ---------- Reportes toggle ---------- */
+
+.reportes-toggle {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 18px;
+  background: var(--color-tint);
+  padding: 4px;
+  border-radius: var(--radius-pill);
+  width: fit-content;
+}
+
+.reportes-toggle .toggle {
+  background: none;
+  border: none;
+  padding: 7px 16px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-muted);
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.reportes-toggle .toggle:hover {
+  color: var(--color-text);
+}
+
+.reportes-toggle .toggle.active {
+  background: var(--color-secondary);
+  color: #fff;
+}
+
+.filtro-fecha-cobros {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.filtros-mes {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.filtros-mes label {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.selector-fecha {
+  position: relative;
+  display: inline-block;
+}
+
+.selector-fecha-campo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  padding: 0 8px 0 12px;
+}
+
+.selector-fecha-campo:focus-within {
+  border-color: var(--color-secondary);
+}
+
+.selector-fecha-input {
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  padding: 9px 0 !important;
+  width: 80px; /* lo justo para dd/mm/aaaa: el casillero de fecha no queda largo */
+  font-size: 13.5px;
+  color: var(--color-text);
+}
+
+.selector-fecha-icono {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 6px;
+  border-radius: var(--radius-sm);
+}
+
+.selector-fecha-icono:hover {
+  background: var(--color-secondary-soft);
+  color: var(--color-secondary);
+}
+
+.selector-fecha-input:disabled,
+.selector-fecha-icono:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.calendario-panel {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 0;
+  z-index: 30;
+  width: 260px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 14px;
+}
+
+.calendario-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.calendario-header strong {
+  font-size: 13.5px;
+}
+
+.calendario-nav {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  line-height: 1;
+}
+
+.calendario-nav-grupo {
+  display: inline-flex;
+}
+
+.calendario-nav-anio {
+  padding: 4px 6px;
+}
+
+.calendario-nav:hover {
+  background: var(--color-secondary-soft);
+  color: var(--color-secondary);
+}
+
+.calendario-semana {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  margin-bottom: 4px;
+}
+
+.calendario-semana span {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-muted);
+}
+
+.calendario-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+}
+
+.calendario-dia {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  font-size: 13px;
+  padding: 7px 0;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.calendario-dia:hover {
+  background: var(--color-secondary-soft);
+  color: var(--color-secondary);
+}
+
+.calendario-dia.seleccionado:hover {
+  background: var(--color-accent-hover);
+  color: #fff;
+}
+
+.calendario-dia.fuera-de-mes {
+  color: var(--color-muted);
+  opacity: 0.5;
+}
+
+.calendario-dia.hoy {
+  font-weight: 700;
+  color: var(--color-accent);
+}
+
+.calendario-dia.seleccionado {
+  background: var(--color-accent);
+  color: #fff;
+  font-weight: 700;
+}
+
+.calendario-acciones {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--color-border);
+}
+
+.calendario-acciones button {
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.calendario-acciones button:hover {
+  text-decoration: underline;
+}
+
+/* "Borrar" (saca la fecha) va en rojo al pasar el mouse, como los demás botones que limpian. */
+.calendario-acciones .calendario-limpiar:hover {
+  color: var(--color-accent-hover);
+}
+
+.filtro-metodos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+}
+
+.filtro-metodos label {
+  font-size: 14px;
+  color: var(--color-text);
+}
+
+/* ---------- Cliente detail ---------- */
+
+.btn-volver {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 12px;
+  margin: 0 0 20px -12px;
+  border-radius: var(--radius-sm);
+  transition: background 0.15s ease;
+}
+
+.btn-volver:hover {
+  background: var(--color-secondary-soft);
+}
+
+#ficha-cliente p,
+#ficha-proveedor p {
+  margin: 8px 0;
+  font-size: 14.5px;
+}
+
+#ficha-cliente label,
+#ficha-proveedor label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13px;
+  color: var(--color-muted);
+  margin-bottom: 14px;
+  font-weight: 600;
+}
+
+/* Agregar cliente: casilleros compactos en filas, como Gastos (`.gasto-fila`/`.gasto-campo`), en vez de un
+   campo por renglón ocupando todo el ancho (Pedido: "el formulario para llenar un cliente está muy grande"). */
+.campo-codigo-cliente {
+  width: 90px;
+}
+
+.campo-condicion-iva-cliente {
+  width: 220px;
+}
+
+.campo-cuit-cliente {
+  width: 160px;
+}
+
+.ficha-cliente-acciones {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.ficha-cliente-acciones .btn-borrar-cliente-directo {
+  margin-left: auto;
+}
+
+.ayuda-campo {
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.ficha-cliente-estado {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.items-pedido-lista {
+  margin: 10px 0;
+  padding-left: 22px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+.recorrido-lista {
+  list-style: none;
+  margin: 14px 0;
+  padding: 0;
+  max-height: 320px;
+  overflow-y: auto;
+}
+
+.recorrido-lista li {
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.recorrido-lista li:last-child {
+  border-bottom: none;
+}
+
+.recorrido-lista label {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.fila-imprimir-factura {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.fila-imprimir-factura label {
+  flex: 1;
+}
+
+.btn-ver-preview {
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 2px 8px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-ver-preview:hover {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  background: var(--color-secondary-soft);
+}
+
+.modal-card:has(.preview-reparto) {
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.modal-card:has(.preview-reparto:not([hidden])) {
+  max-width: min(960px, 95vw);
+}
+
+/* "Imprimir facturas de hoy": con alguna vista previa abierta el cuadro se ensancha (si no, las
+   columnas del ticket quedan apretadas) y, si crece mucho, scrollea. */
+.modal-card:has(.preview-factura-impresion) {
+  max-height: 92vh;
+  overflow-y: auto;
+}
+
+.modal-card:has(.preview-factura-impresion:not([hidden])) {
+  max-width: min(680px, 95vw);
+}
+
+/* Simula la hoja en papel: siempre clara, aunque la app esté en modo oscuro */
+.preview-reparto {
+  --color-text: #2b2320;
+  --color-muted: #8a7d70;
+  --color-tint: #f6f0e9;
+  --color-border: #e8e0d6;
+  --color-panel: #ffffff;
+  --color-bg: #ffffff;
+  --color-row-hover: #ffffff;
+  background: #fff;
+  color: #000;
+  padding: 12px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 16px;
+  overflow-x: auto;
+}
+
+/* La hoja en papel no tiene "hover": sin esto, al pasar el mouse la fila se pintaba de oscuro. */
+.preview-reparto tbody tr:hover td {
+  background: transparent;
+}
+
+.preview-reparto p {
+  margin: 0;
+}
+
+.preview-factura-impresion {
+  margin-top: 8px;
+  padding: 6px 10px;
+  background: var(--color-tint);
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+}
+
+.preview-factura-impresion p {
+  color: var(--color-text);
+}
+
+.preview-factura-impresion .factura-impresion-card {
+  border-bottom: none;
+}
+
+.recorrido-lista input[type='checkbox']:disabled + span {
+  color: var(--color-muted);
+}
+
+.recorrido-lista .recorrido-sin-domicilio {
+  color: var(--color-muted);
+  font-style: italic;
+}
+
+.facturas-pendientes-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.factura-pendiente-item {
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 6px;
+}
+
+.factura-pendiente-item:last-child {
+  border-bottom: none;
+}
+
+.ver-item-factura-pendiente {
+  display: block;
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 6px 4px;
+  font-size: 14px;
+  color: var(--color-text);
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.ver-item-factura-pendiente:hover {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  background: var(--color-secondary-soft);
+}
+
+.items-factura-pendiente {
+  padding-left: 12px;
+}
+
+/* ---------- Pantalla de PIN ---------- */
+
+#pantalla-pin {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--color-bg);
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+#pantalla-pin.visible {
+  display: flex;
+}
+
+.pin-card {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 340px;
+  text-align: center;
+}
+
+.pin-card .logo-freska {
+  width: 240px;
+  height: auto;
+  margin: 0 auto 22px;
+}
+
+.pin-card .logo-claro {
+  display: block;
+}
+
+.pin-card h2 {
+  font-size: 18px;
+  margin: 0 0 6px;
+}
+
+.pin-card p.pin-subtitulo {
+  color: var(--color-muted);
+  font-size: 14px;
+  margin: 0 0 24px;
+}
+
+.pin-input-wrapper {
+  position: relative;
+  margin-bottom: 14px;
+}
+
+.pin-input {
+  width: 100%;
+  height: 56px;
+  box-sizing: border-box;
+  text-align: center;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 56px;
+  letter-spacing: 0.6em;
+  padding: 0 44px 0 0.6em;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+}
+
+.pin-input::placeholder {
+  font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 400;
+  letter-spacing: normal;
+  color: var(--color-muted);
+}
+
+.pin-input.compacto {
+  height: 40px;
+  font-family: -apple-system, "Segoe UI", Arial, sans-serif;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 40px;
+  letter-spacing: 0.05em;
+  text-align: left;
+  padding: 0 40px 0 14px;
+}
+
+.toggle-ver-pin {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--color-muted);
+  padding: 6px;
+  border-radius: var(--radius-sm);
+}
+
+.toggle-ver-pin svg {
+  display: block;
+}
+
+.toggle-ver-pin:hover {
+  color: var(--color-text);
+}
+
+.pin-card button.primary {
+  width: 100%;
+  padding: 12px;
+  font-size: 15px;
+  margin-top: 6px;
+}
+
+.pin-card .btn-group {
+  margin-top: 6px;
+}
+
+.pin-card .btn-group button {
+  flex: 1;
+  width: auto;
+  margin-top: 0;
+  padding: 11px;
+}
+
+.pin-card .error-msg {
+  margin: -4px 0 14px;
+  text-align: left;
+}
+
+.pin-card .link-secundario {
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  font-size: 13px;
+  cursor: pointer;
+  margin-top: 16px;
+  padding: 0;
+}
+
+.pin-card .link-secundario:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Modal ---------- */
+
+#modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: var(--color-overlay);
+  align-items: center;
+  justify-content: center;
+  z-index: 150;
+}
+
+#modal-overlay.visible {
+  display: flex;
+}
+
+.modal-card {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 28px;
+  width: 100%;
+  max-width: 380px;
+}
+
+.modal-card:has(.cobros-dia-tabla) {
+  max-width: 520px;
+}
+
+.cobros-dia-tabla {
+  width: 100%;
+  margin: 0;
+}
+
+.cobros-dia-tabla tbody tr.cobros-dia-nuevo:not(:first-child) td {
+  border-top: 1px solid var(--color-border-strong);
+}
+
+.cobros-dia-tabla tfoot td {
+  border-top: 2px solid var(--color-border-strong);
+}
+
+.modal-card h3 {
+  margin: 0 0 8px;
+  font-size: 17px;
+}
+
+.modal-card p {
+  margin: 0 0 18px;
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.modal-card input[type='text']:not(.monto-pago) {
+  width: 100%;
+  margin-bottom: 20px;
+}
+
+/* Los campos compuestos (con un $ / % / "kg" adentro del mismo casillero, como el modal de Stock) ya miden
+   su ancho por el casillero que los rodea y van en fila, no apilados: la regla de arriba (pensada para
+   campos sueltos uno debajo del otro) los dejaba más altos de lo normal y con el texto corrido para arriba. */
+.modal-card .input-porcentaje input[type='text'],
+.modal-card .peso-unidad input[type='text'] {
+  width: auto;
+  margin-bottom: 0;
+}
+
+.modal-card .btn-group {
+  justify-content: flex-end;
+}
+
+.modal-card:has(.lista-consulta-clientes) {
+  max-width: 420px;
+}
+
+.consulta-toggle {
+  margin-bottom: 14px;
+}
+
+.check-todos-consulta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 6px 4px 10px;
+  border-bottom: 1px solid var(--color-border);
+  margin-bottom: 8px;
+  cursor: pointer;
+}
+
+.lista-consulta-vacia {
+  color: var(--color-muted);
+  font-size: 13.5px;
+  padding: 10px 4px;
+}
+
+.consulta-mensaje-titulo {
+  margin: 0 0 8px !important;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.opciones-mensaje-consulta {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.opciones-mensaje-consulta label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.texto-mensaje-personalizado {
+  width: 100%;
+  min-height: 70px;
+  resize: vertical;
+  margin-bottom: 20px;
+  font-family: inherit;
+}
+
+.lista-consulta-clientes {
+  max-height: 260px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.item-consulta-cliente {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 4px;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+}
+
+.item-consulta-cliente:hover {
+  background: var(--color-tint);
+}
+
+#btn-consulta-whatsapp {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+#btn-consulta-whatsapp svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* ---------- Toast ---------- */
+
+#toast {
+  display: none;
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--color-toast-bg);
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  box-shadow: var(--shadow-md);
+  z-index: 200;
+}
+
+#toast.visible {
+  display: block;
+}
+
+#toast.error {
+  background: var(--color-accent-hover);
+}
+
+/* ---------- Flecha para volver arriba ---------- */
+
+.btn-subir {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  border-radius: 50%;
+  background: var(--color-panel);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
+  box-shadow: var(--shadow-md);
+  cursor: pointer;
+  z-index: 40;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.btn-subir.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.btn-subir:hover {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  background: var(--color-secondary-soft);
+}
+
+@media print {
+  .btn-subir {
+    display: none !important;
+  }
+}
+
+/* ---------- Impresión (facturas para repartir / hoja de reparto) ---------- */
+
+#area-impresion {
+  display: none;
+}
+
+@media print {
+  header,
+  .cuerpo,
+  #modal-overlay,
+  #toast,
+  #pantalla-pin {
+    display: none !important;
+  }
+
+  #area-impresion {
+    display: block !important;
+    color: #000;
+  }
+}
+
+.hoja-impresion-facturas {
+  display: block;
+}
+
+.factura-impresion-card {
+  padding: 8px 4px;
+  border-bottom: 1px solid #ccc;
+  break-inside: avoid;
+}
+
+.factura-impresion-titulo {
+  display: flex;
+  justify-content: space-between;
+  font-weight: 700;
+  margin: 0 0 2px;
+}
+
+.factura-impresion-fecha {
+  font-weight: 400;
+}
+
+.factura-impresion-tabla {
+  width: 100%;
+  margin: 2px 0 4px;
+  border-collapse: collapse;
+  background: none;
+  border: none;
+  border-radius: 0;
+}
+
+.factura-impresion-tabla td {
+  padding: 1px 0;
+  border: none;
+  vertical-align: top;
+}
+
+/* Encabezado de columnas: discreto, para que se entienda qué es cada número sin pesar en el ticket. */
+.factura-impresion-tabla th {
+  padding: 0 0 2px;
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background: none;
+  font-size: 0.8em;
+  font-weight: 600;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--color-muted);
+}
+
+@media print {
+  .factura-impresion-tabla th {
+    color: #555;
+    border-bottom-color: #999;
+  }
+}
+
+.factura-impresion-tabla th.col-importe {
+  text-align: right;
+}
+
+.factura-impresion-tabla tbody tr:hover td {
+  background: none;
+}
+
+/* Anchos fijos en em: así las columnas quedan alineadas de un ticket al siguiente. Cantidad y precio
+   unitario, a la izquierda; la descripción toma lo que sobra; el importe, a la derecha. */
+.factura-impresion-tabla .col-cantidad {
+  width: 5.2em;
+  white-space: nowrap;
+}
+
+.factura-impresion-tabla .col-descripcion {
+  padding-right: 0.8em;
+}
+
+.factura-impresion-tabla .col-precio {
+  width: 7em;
+  white-space: nowrap;
+}
+
+.factura-impresion-tabla .col-importe {
+  width: 6.6em;
+  white-space: nowrap;
+  text-align: right;
+}
+
+.factura-impresion-total-saldo {
+  position: relative;
+  display: flex;
+  justify-content: space-between;
+  margin: 4px 0 0;
+  padding-top: 3px;
+}
+
+/* La línea sobre el total va solo sobre la columna del subtotal (6.6em), no de punta a punta. */
+.factura-impresion-total-saldo::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 6.6em;
+  border-top: 1px solid #999;
+}
+
+.factura-impresion-total {
+  font-weight: 700;
+}
+
+.hoja-impresion-reparto {
+  page: reparto;
+}
+
+@page reparto {
+  size: landscape;
+}
+
+.tabla-impresion-reparto {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 12px;
+}
+
+.tabla-impresion-reparto th,
+.tabla-impresion-reparto td {
+  border: 1px solid #000;
+  padding: 6px 4px;
+  text-align: left;
+}
+
+.tabla-impresion-reparto th {
+  font-size: 10px;
+  letter-spacing: 0;
+  padding: 6px 4px;
+  overflow-wrap: anywhere;
+}
+
+.tabla-impresion-reparto .col-cliente { width: 16%; }
+.tabla-impresion-reparto .col-pedido { width: 28%; }
+.tabla-impresion-reparto .col-monto { width: 10%; }
+
+.lista-pedido-reparto {
+  margin: 0;
+  padding-left: 14px;
+}
+
+.tabla-impresion-reparto td {
+  height: 32px;
+}
+
+.tabla-impresion-reparto thead {
+  display: table-header-group;
+}
+
+.tabla-impresion-reparto tr {
+  break-inside: avoid;
+}
+
+.tabla-impresion-reparto .fila-total-reparto td {
+  font-weight: 700;
+}
+
+/* ---------- Cierre de caja ---------- */
+
+/* Cierre del día en dos columnas (lo que entró y salió / la cuenta de la caja) y el detalle abajo,
+   a todo el ancho. En ventanas angostas se apilan. */
+.cierre-columnas {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  gap: 0 36px;
+  align-items: start;
+}
+
+.cierre-col-izq > h2:first-child,
+.cierre-col-der > h2:first-child {
+  margin-top: 0;
+}
+
+@media (max-width: 900px) {
+  .cierre-columnas {
+    grid-template-columns: 1fr;
+  }
+}
+
+.cierre-caja h2 {
+  margin: 26px 0 10px;
+}
+
+.cierre-caja .toolbar + h2 {
+  margin-top: 6px;
+}
+
+.retiro-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 14px;
+}
+
+.retiro-form #retiro-concepto {
+  flex: 1 1 220px;
+}
+
+.retiro-form #retiro-monto {
+  flex: 0 0 140px;
+}
+
+.cierre-cuenta {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.cierre-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 0;
+}
+
+.cierre-fila input {
+  width: 120px;
+  padding: 5px 10px;
+  font-size: 13.5px;
+  text-align: right;
+}
+
+.cierre-total {
+  font-weight: 700;
+  border-top: 1px solid var(--color-border);
+  padding-top: 10px;
+}
+
+.cierre-dif {
+  margin: 4px 0 0;
+  padding: 9px 12px;
+  border-radius: var(--radius-sm);
+  background: var(--color-tint);
+  color: var(--color-muted);
+  font-weight: 600;
+}
+
+.cierre-dif.cierre-dif-ok {
+  background: var(--color-badge-pagada-bg);
+  color: var(--color-badge-pagada-text);
+}
+
+.cierre-dif.cierre-dif-mal {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.hoja-impresion-cierre h1 {
+  font-size: 20px;
+  margin: 0 0 14px;
+}
+
+.hoja-impresion-cierre h2 {
+  font-size: 14px;
+  margin: 18px 0 6px;
+}
+
+.tabla-impresion-cierre {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: none;
+  border: none;
+}
+
+.tabla-impresion-cierre td {
+  border: none;
+  border-bottom: 1px solid #ccc;
+  padding: 5px 4px;
+}
+
+.tabla-impresion-cierre td:last-child {
+  text-align: right;
+  white-space: nowrap;
+}
+
+.tabla-impresion-cierre .fila-total td {
+  font-weight: 700;
+}
+
+.cierre-titulo-fila {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  margin: 26px 0 10px;
+}
+
+.cierre-titulo-fila h2 {
+  margin: 0;
+}
+
+.cierre-titulo-fila + .ayuda-campo {
+  margin-top: -4px;
+}
+
+.btn-redondo {
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  flex: none;
+  transition: background 0.15s ease, transform 0.15s ease;
+}
+
+.btn-redondo.btn-mas {
+  background: var(--color-boton);
+  border: 1px solid var(--color-boton);
+  color: #fff;
+}
+
+.btn-redondo.btn-mas:hover {
+  background: var(--color-boton-hover);
+}
+
+.btn-redondo.btn-mas.abierto {
+  transform: rotate(45deg);
+}
+
+/* El + y el − se dibujan con rayitas (no con el texto) para que queden bien centrados en el círculo:
+   el signo de una tipografía nunca cae justo en el medio. */
+.btn-redondo.btn-mas,
+.btn-redondo.btn-menos {
+  position: relative;
+  font-size: 0;
+}
+
+.btn-redondo.btn-mas::before,
+.btn-redondo.btn-mas::after,
+.btn-redondo.btn-menos::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 12px;
+  height: 2px;
+  margin: -1px 0 0 -6px;
+  border-radius: 1px;
+  background: currentColor;
+}
+
+.btn-redondo.btn-mas::after {
+  transform: rotate(90deg);
+}
+
+.btn-redondo.btn-menos {
+  background: var(--color-boton);
+  border: 1px solid var(--color-boton);
+  color: #fff;
+}
+
+.btn-redondo.btn-menos:hover {
+  background: var(--color-boton-hover);
+}
+
+/* Tachito: el botón redondo rojo que borra un registro de una lista (cheque, gasto, compra, pago…). El "−"
+   queda para sacar una línea mientras se está armando algo. */
+.btn-redondo.btn-tacho {
+  background: var(--color-boton);
+  border: 1px solid var(--color-boton);
+  color: #fff;
+}
+
+.btn-redondo.btn-tacho:hover {
+  background: var(--color-boton-hover);
+}
+
+.btn-redondo.btn-tacho svg {
+  display: block;
+}
+
+/* Botón "✓" de guardar de un campo que no se guarda solo al salir (ver GUARDAR_SVG): apagado hasta que el
+   valor cambia, para que quede claro que hace falta tocarlo a propósito. */
+.btn-redondo.btn-guardar-campo {
+  background: var(--color-badge-pagada-text);
+  border: 1px solid var(--color-badge-pagada-text);
+  color: #fff;
+}
+
+.btn-redondo.btn-guardar-campo:hover {
+  filter: brightness(1.08);
+}
+
+.btn-redondo.btn-guardar-campo:disabled {
+  background: var(--color-tint);
+  border-color: var(--color-border-strong);
+  color: var(--color-muted);
+  cursor: default;
+  opacity: 0.7;
+}
+
+.btn-redondo.btn-guardar-campo svg {
+  display: block;
+}
+
+.cierre-contado-campo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* "Dio justo": enlace chico debajo de lo contado. */
+#btn-dio-justo {
+  display: block;
+  padding: 2px 0 0;
+  font-size: 12.5px;
+  white-space: nowrap;
+}
+
+.fila-total-cobrado td {
+  font-weight: 700;
+  border-top: 1px solid var(--color-border-strong);
+}
+
+.estado-cierre {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.estado-cierre-ok {
+  background: var(--color-badge-pagada-bg);
+  color: var(--color-badge-pagada-text);
+}
+
+.estado-cierre-mal {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.estado-cierre-nada {
+  background: var(--color-badge-anulada-bg);
+  color: var(--color-badge-anulada-text);
+}
+
+.total-cobrado-impresion {
+  font-size: 13px;
+  font-weight: 700;
+  margin: 12px 0 0;
+}
+
+/* Las tablas del cierre ocupan el mismo ancho que la cuenta de la caja, así el + y los − quedan alineados. */
+.cierre-caja table.angosto {
+  max-width: none;
+}
+
+.calendario-panel.a-la-derecha {
+  left: auto;
+  right: 0;
+}
+
+/* Barra con el selector de fecha pegado al toggle (en vez de empujado al borde derecho). */
+.toolbar-junta {
+  justify-content: flex-start;
+  gap: 16px;
+}
+
+.toolbar-grupo {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.toolbar-junta {
+  margin-bottom: 38px;
+}
+
+.toolbar-junta .reportes-toggle,
+.toolbar-grupo .reportes-toggle {
+  margin-bottom: 0;
+}
+
+/* El toggle traía 18px de margen propio; se lo pasamos al grupo para que el espacio de abajo no cambie. */
+.toolbar-grupo {
+  margin-bottom: 18px;
+}
+
+.selector-rango-flecha {
+  color: var(--color-muted);
+  font-size: 13px;
+}
+
+/* Rango: casilleros angostos con el texto centrado, la flecha en el medio y el calendario al final. */
+.selector-rango .selector-fecha-campo {
+  gap: 4px;
+  padding: 0 4px 0 6px;
+}
+
+.selector-rango .selector-fecha-input {
+  width: 84px;
+  text-align: center;
+}
+
+.selector-rango .selector-fecha-icono {
+  margin-left: 6px;
+}
+
+.calendario-pista {
+  margin: 10px 0 0;
+  font-size: 12.5px;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.calendario-dia.en-rango {
+  background: var(--color-accent-soft);
+  border-radius: 0;
+}
+
+.calendario-acciones .calendario-atajo {
+  background: none;
+  border: none;
+  color: var(--color-secondary);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.retiro-sugerencias {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: -6px 0 14px;
+}
+
+.chip-retiro-grupo {
+  display: inline-flex;
+  align-items: center;
+  background: var(--color-tint);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.chip-retiro-grupo:hover {
+  border-color: var(--color-border-strong);
+}
+
+.chip-retiro {
+  background: none;
+  border: none;
+  color: var(--color-text);
+  padding: 5px 4px 5px 12px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.chip-retiro-x {
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  padding: 5px 9px 5px 4px;
+  font-size: 15px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.chip-retiro-x:hover {
+  color: var(--color-accent);
+}
+
+/* Deshacer un pago de comisión (informe de Vendedores): borra un gasto, así que en rojo al pasar el mouse
+   (como el resto de lo destructivo), no el color de acento que usan las demás "×" de chips. */
+.deshacer-pago-comision:hover {
+  color: var(--color-boton);
+}
+
+.chip-retiro-grupo[hidden] {
+  display: none;
+}
+
+.cierre-historial {
+  max-width: 560px;
+}
+
+.cierre-historial .toolbar .buscador {
+  flex: 1 1 180px;
+  max-width: 220px;
+}
+
+/* Líneas de una factura desplegada (Facturas y ficha de cliente): la tabla del ticket, más angosta
+   para que el precio no quede lejos de la descripción. */
+.items-factura-tabla {
+  max-width: 520px;
+  margin: 2px 0;
+}
+
+/* El total bajo las líneas usa el mismo ancho que la tabla, como en el ticket. */
+.items-factura-total .factura-parcial {
+  display: block;
+  font-size: 0.85em;
+  color: var(--color-muted);
+}
+
+.items-factura-total {
+  max-width: 520px;
+  margin: 2px 0;
+}
+
+.texto-suave {
+  color: var(--color-muted);
+}
+
+/* El "+" para sumar otra línea de pago va abajo a la izquierda, pegado a las líneas. */
+.pago-agregar {
+  display: flex;
+  justify-content: flex-start;
+  margin: -6px 0 18px;
+}
+
+/* La fila que se despliega debajo de una factura (Facturas y ficha del cliente) va con un fondo un poco
+   distinto, para que se entienda que es el detalle de la fila de arriba. */
+.items-factura-tab-fila td,
+.items-pedido-fila td,
+.items-factura-tab-fila:hover td,
+.items-pedido-fila:hover td {
+  background: var(--color-tint);
+}
+
+/* Guardar / imprimir viven dentro del cuadro de la cuenta, separados por una línea. */
+.cierre-acciones {
+  border-top: 1px solid var(--color-border);
+  padding-top: 12px;
+  margin-top: 4px;
+}
+
+.cierre-acciones .ayuda-campo {
+  margin: 0 0 10px;
+}
+
+.cierre-acciones .btn-group {
+  margin: 0;
+}
+
+/* Aviso de que lo escrito todavía no se guardó: resaltado, para que no se pase por alto. */
+.ayuda-campo.cierre-estado-pendiente {
+  color: var(--color-badge-pendiente-text);
+  font-weight: 600;
+}
+
+/* Marca de un retiro que viene de la pestaña Gastos (gasto pagado en efectivo): no se saca desde el cierre. */
+.etiqueta-gasto {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  background: var(--color-tint);
+  color: var(--color-muted);
+  font-size: 11.5px;
+  font-weight: 600;
+  vertical-align: 1px;
+}
+
+/* ---------- Gastos ---------- */
+
+.gasto-form {
+  margin-bottom: 8px;
+}
+
+.gasto-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.gasto-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.gasto-campo[hidden] {
+  display: none;
+}
+
+.gasto-campo-grande {
+  flex: 1 1 180px;
+  min-width: 140px;
+}
+
+#gasto-categoria {
+  width: 185px;
+}
+
+.gasto-campo-observacion {
+  flex: 1 1 320px;
+  max-width: 560px;
+}
+
+#gasto-medio {
+  width: 135px;
+}
+
+#gasto-cuenta {
+  width: 150px;
+}
+
+#gasto-tarjeta {
+  width: 160px;
+}
+
+#gasto-cuotas {
+  width: 120px;
+}
+
+#gasto-cheque-id {
+  width: 420px;
+  max-width: 100%;
+}
+
+#gasto-monto[readonly] {
+  background: var(--color-bg);
+}
+
+.gasto-campo input[type='text'],
+.gasto-campo select {
+  font-weight: 400;
+  font-size: 14px;
+}
+
+.gasto-campo .input-moneda {
+  width: 140px;
+  height: 36px;
+}
+
+/* Con la clase `monto-pago` (opta afuera del `margin-bottom` que un input de texto lleva por defecto en un
+   modal, ver más arriba): sin esto, ese margen agranda la caja entera y el número queda pegado arriba en vez
+   de centrado (2026-09-28, en "Registrar pago de comisión"). */
+.gasto-campo .input-moneda input {
+  height: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Mismo motivo que arriba: el margen que trae `.pin-input-wrapper` (pensado para las pantallas de contraseña,
+   donde va solo) agranda el campo y lo descentra al lado de los demás (2026-09-28, "Agregar usuario") —
+   acá no hace falta, ya separa la fila siguiente el `gap` de `.gasto-fila`. También se achica el ancho, para
+   que no quede más ancho que el resto de los campos de la fila. */
+.gasto-campo .pin-input-wrapper {
+  width: 170px;
+  margin-bottom: 0;
+}
+
+.gasto-form .btn-group {
+  margin-top: 4px;
+}
+
+.gasto-cheque {
+  padding-top: 12px;
+  border-top: 1px dashed var(--color-border);
+}
+
+.gasto-cheque[hidden] {
+  display: none;
+}
+
+.gastos-subtotales {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: -8px 0 16px;
+}
+
+.gasto-subtotal {
+  padding: 3px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--color-tint);
+  font-size: 13px;
+}
+
+.gasto-subtotal strong {
+  margin-left: 4px;
+}
+
+.gasto-detalle-cheque {
+  margin-top: 2px;
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+/* Categorías de gasto desplegables con sus descripciones. */
+.tabla-categorias-gasto .cantidad-descripciones {
+  color: var(--color-muted);
+  font-size: 12.5px;
+}
+
+.tabla-categorias-gasto tr.detalle-categoria-gasto td {
+  background: var(--color-tint);
+  padding-left: 40px;
+}
+
+.tabla-categorias-gasto .retiro-sugerencias {
+  margin: 0 0 10px;
+}
+
+.chip-retiro-texto {
+  padding: 5px 4px 5px 12px;
+  font-size: 13px;
+}
+
+.agregar-descripcion-categoria {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.agregar-descripcion-categoria input {
+  flex: 1;
+  max-width: 320px;
+}
+
+.tabla-categorias-gasto.angosto {
+  max-width: 760px;
+}
+
+.tabla-categorias-gasto tr.detalle-categoria-gasto td {
+  width: auto;
+  white-space: normal;
+}
+
+.retiro-sugerencias[hidden],
+.agregar-descripcion-categoria input[hidden] {
+  display: none;
+}
+
+.retiro-form {
+  align-items: center;
+}
+
+/* Formulario de retiros del Cierre: motivo, categoría, monto y "+" en la misma fila (se acomoda en dos si no entra). */
+.retiro-form #retiro-concepto {
+  flex: 1 1 120px;
+  min-width: 110px;
+}
+
+.retiro-form #retiro-categoria {
+  flex: 0 0 150px;
+  width: 150px;
+  min-width: 0;
+  text-overflow: ellipsis;
+}
+
+.retiro-form #retiro-monto {
+  flex: 0 0 100px;
+  width: 100px;
+  min-width: 0;
+}
+
+/* Campo con "×" para borrar lo escrito. */
+.campo-limpiable {
+  position: relative;
+  display: block;
+}
+
+.campo-limpiable input {
+  width: 100%;
+  box-sizing: border-box;
+  padding-right: 30px;
+}
+
+.btn-limpiar-campo {
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background: none;
+  color: var(--color-muted);
+  font-size: 17px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.btn-limpiar-campo:hover {
+  background: var(--color-tint);
+  color: var(--color-text);
+}
+
+.btn-limpiar-campo[hidden] {
+  display: none;
+}
+
+.retiro-form .campo-limpiable {
+  flex: 1 1 120px;
+  min-width: 110px;
+}
+
+.gasto-campo .campo-limpiable {
+  width: 100%;
+}
+
+/* Monto negativo (recibos en el historial del cliente): el "−" queda colgado a la izquierda, afuera del
+   texto, así el "$" de todas las filas arranca en el mismo lugar. */
+.monto-negativo {
+  position: relative;
+}
+
+.monto-negativo::before {
+  content: '-';
+  position: absolute;
+  right: 100%;
+  padding-right: 1px;
+}
+
+/* Desglose de un recibo del historial: factura · método · monto. */
+.factura-impresion-tabla .col-recibo-factura {
+  width: 9em;
+  white-space: nowrap;
+}
+
+/* ---------- Cheques ---------- */
+
+.acciones-cheque {
+  white-space: nowrap;
+}
+
+.acciones-cheque button:not(.btn-redondo) {
+  margin-right: 8px;
+}
+
+.estado-cheque {
+  display: inline-block;
+  margin-left: 6px;
+  padding: 1px 9px;
+  border-radius: var(--radius-pill);
+  font-size: 11.5px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.estado-cheque-vencido {
+  background: var(--color-accent-soft);
+  color: var(--color-accent);
+}
+
+.estado-cheque-pronto {
+  background: var(--color-badge-pendiente-bg);
+  color: var(--color-badge-pendiente-text);
+}
+
+@media (max-width: 720px) {
+  header h1 {
+    font-size: 19px;
+  }
+}
+
+/* ---------- Proveedores ---------- */
+
+.tabla-compra {
+  width: 100%;
+  max-width: 940px;
+  margin: 14px 0 10px;
+}
+
+.tabla-compra th,
+.tabla-compra td {
+  padding: 6px 8px;
+  vertical-align: middle;
+}
+
+.tabla-compra input[type='text'],
+.tabla-compra select {
+  width: 100%;
+  font-size: 14px;
+}
+
+.tabla-compra .input-moneda {
+  width: 100%;
+}
+
+/* Columnas de la compra: producto, kilos, precio por kilo e importe. */
+.tabla-compra td:first-child {
+  min-width: 140px;
+}
+
+/* Un producto nuevo (select de Producto + Descripción libre) necesita más lugar que uno ya elegido. */
+.linea-compra[data-modo='otro'] td:first-child {
+  min-width: 240px;
+}
+
+/* Los textos de guía (Cantidad, Por kilo, Importe) son lo único que dice qué va en cada casillero (no hay
+   encabezados): las columnas numéricas no se achican por debajo de lo que necesitan para leerse enteros. */
+.tabla-compra td:nth-child(2) {
+  width: 130px;
+  min-width: 130px;
+}
+
+.tabla-compra td:nth-child(3),
+.tabla-compra td:nth-child(4) {
+  width: 120px;
+  min-width: 110px;
+}
+
+/* Cantidad y, pegado, si es por kg o por unidad: mismo formato "campo + unidad" que ya usan Pedidos y
+   Facturas (`.input-unidad`), pero acá la unidad es un desplegable en vez de una etiqueta fija. */
+.lc-cantidad .lc-kilos {
+  border: none !important;
+  box-shadow: none !important;
+  min-width: 0;
+}
+
+.lc-cantidad select.lc-unidad {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 60px;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 13px;
+  padding: 0 0 0 4px;
+  margin-left: 2px;
+}
+
+.lc-nombre {
+  font-size: 14px;
+  /* Mismo margen interno que los casilleros de al lado (Producto, Descripción): así el nombre arranca a la misma altura
+     que el texto de la línea de arriba y no pegado al borde. */
+  display: block;
+  padding-left: 12px;
+}
+
+.lc-nombre .etiqueta-gasto {
+  margin-left: 0;
+}
+
+/* Un producto que no está en la lista: el producto (select, obligatorio) y la descripción (texto, opcional)
+   lado a lado. */
+.lc-otro {
+  display: flex;
+  gap: 8px;
+}
+
+.lc-otro select.lc-producto {
+  flex: 0 0 120px;
+  width: 120px;
+}
+
+/* Base 0 (y no su ancho natural de ~150 px): así la tabla no se ensancha por la descripción y esta toma lo que sobra. */
+.tabla-compra .lc-otro input.lc-descripcion[type='text'] {
+  flex: 1 1 0;
+  width: 0;
+  min-width: 0;
+}
+
+.lc-otro input.lc-descripcion {
+  flex: 1 1 180px;
+  min-width: 150px;
+}
+
+.compra-otro-texto {
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.pago-cheques {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 4px 0 10px;
+}
+
+.pago-cheques-titulo {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.pago-cheque-opcion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 14px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.pago-cheque-opcion input {
+  width: auto;
+  margin: 0;
+}
+
+.detalle-compra-linea {
+  padding: 1px 0;
+}
+
+.detalle-compra-comprobante {
+  padding: 1px 0;
+  color: var(--color-muted);
+  font-size: 12.5px;
+}
+
+.chip-solo .chip-retiro {
+  padding-right: 12px;
+}
+
+.chip-texto {
+  display: inline-block;
+  cursor: default;
+}
+
+/* En los chips de "Lo que vende" el tipo va como una etiqueta que se distingue del chip (antes tenía el
+   mismo fondo y un margen de más a la izquierda). */
+.chip-retiro .etiqueta-gasto {
+  margin: 0 7px 0 0;
+  padding: 1px 8px;
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  line-height: 1.35;
+}
+
+.retiro-sugerencias .pago-cheques-titulo {
+  align-self: center;
+  margin-right: 6px;
+}
+
+.tabla-proveedores,
+.tabla-clientes {
+  max-width: 640px;
+}
+
+.tabla-clientes .col-codigo {
+  width: 64px;
+  color: var(--color-muted);
+}
+
+.tabla-proveedores td {
+  vertical-align: middle;
+}
+
+.tabla-proveedores th:last-child,
+.tabla-proveedores td:last-child {
+  width: 1%;
+  white-space: nowrap;
+}
+
+.tabla-proveedores td.acciones-cheque {
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.pagar-proveedor-fila,
+.compra-proveedor-fila,
+.stock-producto-fila {
+  background: var(--color-panel);
+  color: var(--color-text);
+  border: 1px solid var(--color-border-strong);
+  padding: 9px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 13.5px;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.pagar-proveedor-fila:hover,
+.compra-proveedor-fila:hover,
+.stock-producto-fila:hover {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+  background: var(--color-secondary-soft);
+}
+
+.stock-producto-fila {
+  margin-right: 8px;
+}
+
+.compra-proveedor-fila {
+  margin-right: 8px;
+}
+
+.saldo-deuda {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+#ficha-proveedor .input-moneda {
+  max-width: 220px;
+}
+
+
+/* Fila para agregar un producto (con su tipo) a lo que vende un proveedor: tamaños fijos, el + al lado. */
+.fila-producto-proveedor {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.fila-producto-proveedor select {
+  width: 150px;
+}
+
+.fila-producto-proveedor .autocomplete-buscador {
+  width: 190px;
+  flex: 0 0 190px;
+}
+
+.fila-producto-proveedor input[type='text'] {
+  width: 260px;
+  max-width: 100%;
+}
+
+.alta-vende {
+  flex: 1 1 100%;
+}
+
+.pagar-proveedor-fila.con-deuda {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: #fff;
+}
+
+.pagar-proveedor-fila.con-deuda:hover {
+  background: var(--color-accent-hover);
+  border-color: var(--color-accent-hover);
+  color: #fff;
+}
+
+/* Historial del proveedor: el contenido de cada fila (texto y botones) queda centrado en vertical. */
+.tabla-historial-proveedor td {
+  vertical-align: middle;
+}
+
+.acciones-cheque button {
+  vertical-align: middle;
+}
+
+/* Formularios que no necesitan todo el ancho de la ventana. */
+.panel-angosto,
+#form-cliente.panel,
+#form-proveedor.panel,
+#form-pago-proveedor {
+  max-width: 640px;
+}
+
+#form-compra {
+  width: fit-content;
+  max-width: 100%;
+}
+
+.gastos-proveedores {
+  margin: -6px 0 12px;
+  font-size: 13.5px;
+  color: var(--color-muted);
+}
+
+.gastos-proveedores strong {
+  color: var(--color-text);
+}
+
+.enlace-boton {
+  background: none;
+  border: none;
+  padding: 0 0 0 6px;
+  color: var(--color-secondary);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+/* Cheque de la cartera dentro de una línea del pago a un proveedor. */
+.pago-cheque select {
+  flex: 1 1 100%;
+  min-width: 0;
+  padding: 7px 10px;
+  font-size: 13px;
+}
+
+/* En el pago a un proveedor los casilleros no se estiran: tamaño parecido al del resto de los formularios. */
+#form-pago-proveedor {
+  max-width: 520px;
+}
+
+#form-pago-proveedor .pago-linea .input-moneda {
+  flex: 0 0 170px;
+  height: 36px;
+}
+
+#form-pago-proveedor .pago-linea .metodo-pago {
+  flex: 0 0 150px;
+  height: 36px;
+}
+
+#form-pago-proveedor .pago-cheque select {
+  flex: 0 1 100%;
+}
+
+/* ---------- Estadísticas ---------- */
+
+.est-toolbar {
+  margin-bottom: 18px;
+  gap: 14px;
+}
+
+.est-tarjetas {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin-bottom: 10px;
+}
+
+.est-tarjeta {
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  box-shadow: var(--shadow-sm);
+}
+
+.est-final {
+  margin-bottom: 18px;
+}
+
+.est-final-titulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 4px;
+}
+
+.est-final-titulo .est-tarjeta-titulo {
+  margin-bottom: 0;
+}
+
+.est-final-detalle {
+  margin-top: 10px;
+  max-width: 420px;
+  font-size: 14px;
+}
+
+.est-final-detalle summary {
+  cursor: pointer;
+  color: var(--color-muted);
+  font-size: 13px;
+  width: fit-content;
+}
+
+.est-final-fila {
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  padding: 6px 0;
+}
+
+.est-final-total {
+  border-top: 1px solid var(--color-border);
+  margin-top: 4px;
+  padding-top: 8px;
+  font-weight: 600;
+}
+
+.est-tarjeta-titulo {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  margin-bottom: 4px;
+}
+
+.est-tarjeta strong {
+  font-size: 26px;
+  font-weight: 700;
+}
+
+.est-entradas {
+  color: var(--color-badge-pagada-text);
+}
+
+.est-salidas {
+  color: var(--color-accent);
+}
+
+.est-check {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--color-muted);
+  cursor: pointer;
+}
+
+.est-check input {
+  width: auto;
+  margin: 0;
+}
+
+.est-columnas {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+@media (max-width: 900px) {
+  .est-columnas,
+  .est-tarjetas {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Una sola grilla para todas las filas (en vez de que cada `.est-barra-fila` arme la suya): así la columna de la
+   línea (pista) empieza y termina siempre en el mismo lugar, la tenga más corta o más larga el monto de esa fila
+   en particular (2026-09-28: "las líneas deberían empezar y terminar en el mismo lugar"). Cada fila es
+   `display: contents` (no genera su propia caja: sus tres hijos pasan a ser celdas de esta grilla). */
+.est-barras {
+  display: grid;
+  grid-template-columns: minmax(110px, 38%) 1fr auto;
+  align-items: center;
+  row-gap: 10px;
+  column-gap: 10px;
+}
+
+.est-barra-fila {
+  display: contents;
+  font-size: 13.5px;
+}
+
+.est-barra-nombre {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.est-barra-detalle {
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+.est-barra-pista {
+  height: 12px;
+  background: var(--color-tint);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+}
+
+.est-barra {
+  display: block;
+  height: 100%;
+  border-radius: var(--radius-pill);
+}
+
+.est-barra-entradas {
+  background: var(--color-badge-pagada-text);
+}
+
+.est-barra-salidas {
+  background: var(--color-accent);
+}
+
+.est-barra-proveedores {
+  background: var(--color-accent);
+  opacity: 0.6;
+}
+
+.est-barra-monto {
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.est-nota {
+  margin-top: 10px;
+}
+
+.est-leyenda {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--color-muted);
+  margin-bottom: 8px;
+}
+
+.est-punto {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: 10px;
+}
+
+.est-punto:first-child {
+  margin-left: 0;
+}
+
+.est-grafico {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 200px;
+  padding: 12px 12px 0;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+.est-mes {
+  flex: 1 1 0;
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.est-mes-barras {
+  flex: 1;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 3px;
+}
+
+.est-col {
+  display: block;
+  width: 40%;
+  max-width: 22px;
+  border-radius: 3px 3px 0 0;
+}
+
+.est-mes-nombre {
+  font-size: 11px;
+  color: var(--color-muted);
+  text-align: center;
+  padding: 6px 0 8px;
+  white-space: nowrap;
+}
+
+/* Botón "?" con la explicación de cómo se cuenta. */
+.est-ayuda {
+  position: relative;
+  margin-left: auto;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-ayuda-est {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border-radius: 50%;
+  border: 1px solid var(--color-border-strong);
+  background: var(--color-panel);
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.btn-ayuda-est:hover,
+.btn-ayuda-est[aria-expanded='true'] {
+  color: var(--color-secondary);
+  border-color: var(--color-secondary);
+}
+
+.est-ayuda.ayuda-izquierda {
+  margin-left: 0;
+}
+
+.est-ayuda.ayuda-izquierda .est-ayuda-panel {
+  left: 0;
+  right: auto;
+}
+
+.est-ayuda-panel {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 8px);
+  width: 320px;
+  max-width: 80vw;
+  z-index: 20;
+  padding: 14px 16px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md, 0 8px 24px rgba(0, 0, 0, 0.18));
+  font-size: 13.5px;
+  line-height: 1.45;
+}
+
+.est-ayuda-panel[hidden] {
+  display: none;
+}
+
+.est-ayuda-panel p {
+  margin: 8px 0 0;
+}
+
+/* Más aire entre las partes de la pantalla. */
+.estadisticas-pantalla .est-toolbar {
+  margin-bottom: 28px;
+}
+
+.estadisticas-pantalla .est-tarjetas {
+  gap: 20px;
+  margin-bottom: 18px;
+}
+
+.estadisticas-pantalla .est-tarjeta {
+  padding: 22px 26px;
+}
+
+.estadisticas-pantalla .est-tarjeta strong {
+  font-size: 30px;
+}
+
+.estadisticas-pantalla .est-check {
+  margin: 0 0 34px;
+}
+
+.estadisticas-pantalla .est-columnas {
+  gap: 48px;
+}
+
+.estadisticas-pantalla h2 {
+  margin: 0 0 18px;
+}
+
+.estadisticas-pantalla .est-barras {
+  row-gap: 16px;
+}
+
+.estadisticas-pantalla .est-barra-pista {
+  height: 14px;
+}
+
+.estadisticas-pantalla .est-nota {
+  margin-top: 18px;
+}
+
+.estadisticas-pantalla > h2 {
+  margin-top: 46px;
+}
+
+.estadisticas-pantalla .est-leyenda {
+  margin-bottom: 14px;
+}
+
+.estadisticas-pantalla .est-grafico {
+  height: 240px;
+  gap: 12px;
+  padding: 18px 18px 0;
+  margin-bottom: 20px;
+}
+
+/* Comparación con el período anterior, plata pendiente y ventas. */
+.est-var {
+  display: block;
+  margin-top: 6px;
+  font-size: 12.5px;
+  color: var(--color-muted);
+}
+
+.est-var-bien {
+  color: var(--color-badge-pagada-text);
+  font-weight: 600;
+}
+
+.est-var-mal {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.est-hoy {
+  margin-left: 8px;
+  padding: 2px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--color-tint);
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 600;
+  vertical-align: middle;
+}
+
+.estadisticas-pantalla .est-pendiente {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px;
+  margin-bottom: 46px;
+}
+
+@media (max-width: 900px) {
+  .estadisticas-pantalla .est-pendiente {
+    grid-template-columns: 1fr;
+  }
+}
+
+.est-pendiente .est-tarjeta strong {
+  font-size: 24px;
+}
+
+.est-mayores {
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 10px 0 0;
+  border-top: 1px solid var(--color-border);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 13.5px;
+}
+
+.est-mayores li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.est-mayores .enlace-boton {
+  margin: 0;
+  padding: 0;
+  text-align: left;
+  font-weight: 500;
+  text-decoration: none;
+  color: var(--color-text);
+}
+
+.est-mayores .enlace-boton:hover {
+  text-decoration: underline;
+}
+
+.est-tarjeta .enlace-boton {
+  margin-top: 8px;
+  padding-left: 0;
+}
+
+.est-ventas {
+  margin: -6px 0 22px;
+  font-size: 14.5px;
+}
+
+.est-subtitulo {
+  margin: 0 0 16px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.estadisticas-pantalla .est-columnas + h2 {
+  margin-top: 46px;
+}
+
+/* ---------- Buscador general (lupa) ---------- */
+
+#modal-overlay:has(.buscador-card) {
+  align-items: flex-start;
+  padding-top: 11vh;
+}
+
+.modal-card.buscador-modal {
+  width: min(680px, calc(100vw - 32px));
+  max-width: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+.buscador-campo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.buscador-lupa {
+  display: flex;
+  color: var(--color-muted);
+}
+
+.buscador-campo input {
+  flex: 1;
+  min-width: 0;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent;
+  padding: 6px 0;
+  font-size: 16px;
+}
+
+.buscador-campo kbd {
+  padding: 2px 8px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 6px;
+  font-family: inherit;
+  font-size: 11.5px;
+  color: var(--color-muted);
+}
+
+.buscador-resultados {
+  max-height: min(56vh, 460px);
+  overflow-y: auto;
+  padding: 8px 8px 4px;
+}
+
+.buscador-grupo h4 {
+  margin: 10px 10px 4px;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+}
+
+.buscador-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  width: 100%;
+  padding: 9px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--color-text);
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.buscador-item.activo {
+  background: var(--color-secondary-soft);
+}
+
+.buscador-item-texto {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  min-width: 0;
+}
+
+.buscador-item-titulo {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.buscador-item-detalle {
+  font-size: 12.5px;
+  color: var(--color-muted);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.buscador-item-monto {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.buscador-mas,
+.buscador-vacio {
+  margin: 6px 12px 10px;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.buscador-pie {
+  margin: 0;
+  padding: 10px 18px;
+  border-top: 1px solid var(--color-border);
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+/* Los campos de texto de un cuadro de diálogo llevan margen abajo y ocupan todo el ancho; el del buscador no. */
+.modal-card .buscador-campo input[type='text'] {
+  width: auto;
+  margin: 0;
+}
+
+/* ---------- Campanita de avisos ---------- */
+
+.avisos-contenedor {
+  position: relative;
+}
+
+#btn-avisos {
+  position: relative;
+}
+
+.avisos-numero {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: var(--radius-pill);
+  background: var(--color-boton);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 18px;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.avisos-numero[hidden] {
+  display: none;
+}
+
+.avisos-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  width: 380px;
+  max-width: 88vw;
+  max-height: 72vh;
+  overflow-y: auto;
+  z-index: 200;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+}
+
+.avisos-panel[hidden] {
+  display: none;
+}
+
+.avisos-titulo {
+  padding: 14px 16px 8px;
+  font-size: 15px;
+}
+
+.avisos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 4px 8px 8px;
+}
+
+.aviso-item {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-left: 4px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-tint);
+  color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.aviso-item:hover {
+  background: var(--color-secondary-soft);
+}
+
+.aviso-alta {
+  border-left-color: var(--color-accent);
+}
+
+.aviso-media {
+  border-left-color: var(--color-badge-pendiente-text);
+}
+
+.aviso-item-titulo {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.aviso-item-detalle {
+  font-size: 12.5px;
+  color: var(--color-muted);
+  line-height: 1.4;
+}
+
+.avisos-vacio {
+  margin: 8px 8px 12px;
+  font-size: 13.5px;
+  color: var(--color-muted);
+}
+
+.avisos-pie {
+  padding: 8px 16px 14px;
+  border-top: 1px solid var(--color-border);
+}
+
+.avisos-pie .enlace-boton {
+  padding: 0;
+}
+
+.avisos-config {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 4px 16px 10px;
+}
+
+.aviso-opcion {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 0;
+  padding: 7px 0;
+  font-size: 13.5px;
+  font-weight: 400;
+  color: var(--color-text);
+  cursor: pointer;
+}
+
+.aviso-opcion input {
+  width: auto;
+  margin: 3px 0 0;
+  flex: none;
+}
+
+/* Entregar un cheque: el desplegable de proveedores y el nombre (si es "Otro") ocupan todo el ancho del cuadro. */
+#entrega-proveedor {
+  width: 240px;
+  max-width: 100%;
+  height: 36px;
+  margin-bottom: 10px;
+  padding-top: 0;
+  padding-bottom: 0;
+  font-size: 14px;
+}
+
+.modal-card #entrega-destino[type='text'] {
+  margin-bottom: 10px;
+}
+
+/* Avisos leídos: marca ✓ en cada aviso, "marcar todos" y sección de leídos. */
+.avisos-titulo {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.avisos-titulo .enlace-boton,
+.avisos-pie .enlace-boton {
+  padding: 0;
+  font-size: 12.5px;
+}
+
+.avisos-pie {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.aviso-fila {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.aviso-fila .aviso-item {
+  flex: 1;
+  min-width: 0;
+}
+
+.aviso-marca {
+  flex: none;
+  align-self: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 50%;
+  background: var(--color-panel);
+  color: var(--color-muted);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.aviso-marca:hover {
+  color: var(--color-badge-pagada-text);
+  border-color: var(--color-badge-pagada-text);
+}
+
+.aviso-leido .aviso-item {
+  opacity: 0.55;
+}
+
+.avisos-subtitulo {
+  margin: 8px 4px 0;
+  font-size: 11.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-muted);
+}
+
+/* Las tablas con botones en la última columna (cheques, gastos, historial y lista de proveedores): todo el
+   contenido de cada fila queda centrado en vertical, no el texto arriba y los botones más abajo. */
+table:has(td.acciones-cheque) td,
+table:has(.btn-pago-fila) td {
+  vertical-align: middle;
+}
+
+/* El casillero de fecha dentro de un cuadro de diálogo: sin el margen de abajo que llevan los demás campos de
+   texto y con el tamaño de siempre (no ocupa todo el ancho del cuadro). */
+.modal-card input.selector-fecha-input[type='text']:not(.monto-pago) {
+  width: 100%;
+  margin: 0;
+}
+
+.modal-card .selector-fecha {
+  width: 170px;
+}
+
+/* Código de producto que falta o está repetido (se marca en rojo en la lista de Productos). */
+.codigo-falta {
+  color: var(--color-accent);
+  font-weight: 700;
+}
+
+/* Hoja impresa de la lista de precios (Productos → Imprimir lista de precios). */
+.hoja-impresion-precios h1 {
+  font-size: 20px;
+  margin: 0 0 14px;
+}
+
+.tabla-impresion-precios {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: none;
+  border: none;
+}
+
+.tabla-impresion-precios th,
+.tabla-impresion-precios td {
+  padding: 5px 8px;
+  border-bottom: 1px solid #ccc;
+  text-align: left;
+  color: #000;
+  background: none;
+}
+
+.tabla-impresion-precios th {
+  font-size: 12px;
+  border-bottom: 2px solid #000;
+}
+
+.tabla-impresion-precios tr {
+  break-inside: avoid;
+}
+
+.opciones-impresion-precios {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 12px 0 16px;
+}
+
+.opciones-impresion-precios label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-weight: 400;
+}
+
+.opciones-impresion-precios input[type='radio'] {
+  width: auto;
+  margin: 0;
+}
+
+/* Lista de carga del día (Pedidos → Pedidos de hoy). */
+.carga-cabecera {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 4px;
+}
+
+.carga-cabecera p {
+  margin: 0;
+}
+
+.carga-todos {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.carga-todos input[type='checkbox'] {
+  width: auto;
+  margin: 0;
+}
+
+.carga-impresion-falta {
+  font-style: italic;
+}
+
+.carga-lista {
+  max-height: 55vh;
+  overflow-y: auto;
+  margin: 8px 0 16px;
+}
+
+.carga-producto {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.carga-producto:last-child {
+  border-bottom: none;
+}
+
+.carga-titulo {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 6px;
+}
+
+.carga-bultos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.carga-bulto {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0;
+  padding: 4px 10px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  font-size: 13.5px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.carga-bulto input[type='checkbox'] {
+  width: auto;
+  margin: 0;
+}
+
+.carga-bulto.cargado {
+  background: var(--color-badge-pagada-bg);
+  color: var(--color-badge-pagada-text);
+  border-color: transparent;
+}
+
+.carga-pendiente {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--color-badge-pendiente-text);
+}
+
+/* Hoja impresa de la lista de carga. */
+.hoja-impresion-carga h1 {
+  font-size: 20px;
+  margin: 0 0 14px;
+}
+
+.carga-impresion-producto {
+  margin-bottom: 12px;
+  break-inside: avoid;
+}
+
+.carga-impresion-producto p {
+  margin: 0 0 3px;
+}
+
+.carga-impresion-bultos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+}
+
+.carga-impresion-pendiente {
+  font-style: italic;
+}
+
+/* Saldo a favor de un cliente (saldo negativo). */
+.saldo-a-favor {
+  color: var(--color-badge-pagada-text);
+  font-weight: 600;
+}
+
+/* Anular una factura que ya tenía pagos: qué pasa con esa plata. */
+.anular-destino {
+  margin: 4px 0 12px;
+}
+
+.anular-destino p {
+  margin: 0 0 8px;
+}
+
+.anular-opcion {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-weight: 400;
+  cursor: pointer;
+}
+
+.anular-opcion input[type='radio'] {
+  width: auto;
+  margin: 0;
+}
+
+.anular-devolver {
+  display: flex;
+  gap: 8px;
+  margin: 0 0 8px 24px;
+}
+
+.anular-devolver[hidden] {
+  display: none;
+}
+
+.anular-devolver .input-moneda {
+  width: 150px;
+  height: 36px;
+}
+
+/* En un modal, los casilleros de texto llevan un margen de más: acá van pegados. */
+.modal-card .anular-devolver input[type='text']:not(.monto-pago) {
+  margin: 0;
+  height: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.anular-devolver select {
+  width: auto;
+  height: 36px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+/* Cierre de caja → Día a día. */
+.mes-selector {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin: 0 0 12px;
+}
+
+.mes-selector strong {
+  min-width: 170px;
+  text-align: center;
+  font-size: 15px;
+}
+
+.cierre-mes-resumen {
+  margin: 0 0 12px;
+}
+
+.tabla-dia-a-dia {
+  max-width: 960px;
+}
+
+.tabla-dia-a-dia th,
+.tabla-dia-a-dia td {
+  padding: 9px 12px;
+  white-space: nowrap;
+}
+
+.tabla-dia-a-dia .fila-sin-movimiento td {
+  color: var(--color-muted);
+}
+
+/* Elegir un pedido pendiente para facturar (Facturas). */
+.pedidos-pendientes-lista {
+  max-height: 55vh;
+  overflow-y: auto;
+  margin: 8px 0 16px;
+}
+
+.pedido-pendiente-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.pedido-pendiente-fila:last-child {
+  border-bottom: none;
+}
+
+.pedido-pendiente-datos {
+  min-width: 0;
+  font-size: 14px;
+}
+
+/* Caja general. Ancho fijo (no max-width): así la tarjeta mide siempre lo mismo, tapado o visible el monto,
+   en vez de achicarse/agrandarse según cuánto texto haya adentro. */
+.caja-total-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 0 0 18px;
+  padding: 16px 20px;
+  width: 430px;
+  max-width: 100%;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+/* Título y acciones (ojo, agregar cuenta, menú, ayuda) en la misma línea. */
+.caja-total-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.caja-total-botones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.caja-total-botones .menu-fila,
+.caja-total-botones .est-ayuda {
+  position: relative;
+}
+
+.caja-total-botones .est-ayuda-panel {
+  left: auto;
+  right: 0;
+}
+
+/* El monto tapado es solo el ojo; al mostrarlo, el número se "abre" (max-width 0 → ancho real) y empuja el
+   ojo hacia la derecha. min-height fija el alto de la fila para que no cambie entre los dos estados. */
+.caja-total-monto-fila {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 38px;
+}
+
+.btn-ojo {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  color: var(--color-muted);
+  cursor: pointer;
+  padding: 4px;
+  border-radius: var(--radius-sm);
+}
+
+.btn-ojo svg {
+  width: 16px;
+  height: 16px;
+}
+
+.btn-ojo:hover {
+  background: var(--color-tint);
+  color: var(--color-text);
+}
+
+.caja-total {
+  display: inline-block;
+  max-width: 280px;
+  overflow: hidden;
+  white-space: nowrap;
+  vertical-align: bottom;
+  transition: max-width 0.25s ease, opacity 0.15s ease;
+}
+
+.caja-total.tapado {
+  max-width: 0;
+  opacity: 0;
+}
+
+.caja-total-titulo {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.caja-total {
+  font-size: 30px;
+}
+
+.tabla-caja-general {
+  max-width: 760px;
+}
+
+.tabla-caja-general td.caja-saldo {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.saldo-negativo {
+  color: var(--color-accent);
+}
+
+.caja-saldos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 0 0 14px;
+}
+
+.caja-saldo-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  max-width: 460px;
+  margin: 0;
+  font-weight: 400;
+}
+
+.caja-saldo-fila .input-moneda {
+  width: 190px;
+  height: 36px;
+}
+
+.modal-card .caja-saldo-fila .input-moneda input[type='text']:not(.monto-pago),
+.modal-card .caja-ajuste input[type='text']:not(.monto-pago) {
+  margin: 0;
+  height: 100%;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.caja-ajuste {
+  width: 200px;
+  height: 36px;
+  margin: 8px 0 10px;
+}
+
+.caja-movimientos {
+  max-height: 55vh;
+  overflow-y: auto;
+  margin: 8px 0 14px;
+}
+
+/* Cierre del día: bancos y apps, y salidas. */
+.cierre-salidas-ayuda {
+  margin: -4px 0 8px;
+}
+
+.cierre-cuentas-otras {
+  padding: 12px 14px;
+  max-width: 820px;
+}
+
+.tabla-cierre-cuentas {
+  width: 100%;
+}
+
+.tabla-cierre-cuentas td {
+  white-space: nowrap;
+}
+
+.tabla-cierre-cuentas .input-moneda {
+  width: 130px;
+  height: 34px;
+}
+
+.campo-retencion-transferencia {
+  max-width: 260px;
+}
+
+.fila-retencion-transferencia {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.campo-retencion-transferencia .input-porcentaje {
+  width: 80px;
+  height: 36px;
+}
+
+.cierre-sin-caja {
+  margin-top: 12px;
+}
+
+/* Cuotas de un gasto en crédito. */
+.cuotas-lista {
+  max-height: 55vh;
+  overflow-y: auto;
+  margin: 8px 0 14px;
+}
+
+.cuota-fila {
+  display: grid;
+  grid-template-columns: 110px 90px 1fr auto;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 14px;
+}
+
+.cuota-fila:last-child {
+  border-bottom: none;
+}
+
+.cuota-pagada {
+  color: var(--color-badge-pagada-text);
+}
+
+/* Con qué se pagó una factura (debajo de su detalle). */
+.pagos-de-factura {
+  max-width: 520px;
+  margin: 6px 0 2px;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+/* Historial de una cuenta: modal más ancho, sin cortar fechas ni montos. */
+.modal-card:has(.caja-movimientos) {
+  width: min(760px, 92vw);
+  max-width: none;
+}
+
+.caja-movimientos table th,
+.caja-movimientos table td {
+  padding: 8px 10px;
+}
+
+.caja-movimientos table td:first-child,
+.caja-movimientos table td:nth-child(3),
+.caja-movimientos table td:nth-child(4) {
+  white-space: nowrap;
+}
+
+.tabla-metodos-pago {
+  max-width: 760px;
+}
+
+.tarjetas-metodo {
+  margin: 0;
+  align-items: center;
+}
+
+/* Al elegir con qué se paga un gasto: cuánto hay en esa cuenta. */
+.gasto-saldo-cuenta {
+  align-self: flex-end;
+  padding-bottom: 9px;
+  font-size: 13px;
+  color: var(--color-muted);
+}
+
+.gasto-saldo-cuenta[hidden] {
+  display: none;
+}
+
+#gasto-pago-con {
+  width: 170px;
+}
+
+#gasto-como {
+  width: 140px;
+}
+
+.caja-movimientos .mov-sale { color: var(--color-danger, #b3261e); }
+.caja-movimientos .mov-entra { color: #2e7d32; }
+
+.anular-en-detalle { margin: 8px 0 4px; }
+.tabla-metodos-pago th:nth-child(1), .tabla-metodos-pago td:nth-child(1) { width: 30%; }
+.tabla-metodos-pago td:last-child { white-space: nowrap; text-align: right; }
+.tabla-metodos-pago td { vertical-align: middle; }
+
+.pedidos-hoy { margin-bottom: 20px; }
+.tabla-pedidos-hoy { max-width: 760px; }
+.preparado-producto { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; }
+.preparado-producto input[type='checkbox'] { width: 18px; height: 18px; }
+
+/* Botón "+" a la altura del centro de los casilleros (miden 36 px y el botón 30). */
+.gasto-fila > .btn-redondo.btn-mas { margin-bottom: 3px; }
+.tabla-ingresos th:last-child, .tabla-ingresos td.celda-centrada { width: 1%; text-align: center; }
+/* Fondos personales → Cuentas: anchos en %, así no desbordan en ventanas angostas. */
+.tabla-fondos-cuentas { max-width: 760px; }
+.tabla-fondos-cuentas th:nth-child(1), .tabla-fondos-cuentas td:nth-child(1) { width: 55%; }
+.tabla-fondos-cuentas th:nth-child(2), .tabla-fondos-cuentas td:nth-child(2) { width: 30%; white-space: nowrap; }
+.tabla-fondos-cuentas th:last-child, .tabla-fondos-cuentas td.celda-centrada { width: 15%; text-align: center; }
+/* Fondos personales → Resultado: anchos en %. */
+.tabla-fondos-resultado { max-width: 760px; }
+.tabla-fondos-resultado th:nth-child(1), .tabla-fondos-resultado td:nth-child(1) { width: 40%; }
+.tabla-fondos-resultado th:not(:first-child), .tabla-fondos-resultado td:not(:first-child) { width: 20%; white-space: nowrap; }
+.tabla-fondos-resultado tfoot td { border-top: 2px solid var(--color-border-strong); }
+.texto-ganancia { color: var(--color-badge-pagada-text); }
+.saldo-pases { margin: 0 0 12px; }
+.tabla-fondos-pases { max-width: 760px; }
+.tabla-fondos-pases th:nth-child(1), .tabla-fondos-pases td:nth-child(1) { width: 16%; }
+.tabla-fondos-pases th:nth-child(3), .tabla-fondos-pases td:nth-child(3) { width: 18%; white-space: nowrap; }
+.tabla-fondos-pases th:last-child, .tabla-fondos-pases td.celda-centrada { width: 8%; text-align: center; }
+
+.caja-operaciones-botones { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin: 16px 0 20px; }
+.tabla-operaciones { max-width: 760px; }
+/* El buscador de Operaciones va en la misma fila que el calendario de rango: sin este tope, en una ventana
+   ancha queda más a la derecha que la tabla de abajo (max-width: 760px). */
+.toolbar-operaciones { max-width: 760px; }
+.tabla-operaciones th:last-child, .tabla-operaciones td.celda-centrada { width: 1%; text-align: center; }
+.tabla-operaciones th:nth-child(1) { width: 17%; }
+.tabla-operaciones th:nth-child(2) { width: 24%; }
+.tabla-operaciones th:nth-child(4) { width: 17%; }
+.tabla-operaciones td:nth-child(4) { white-space: nowrap; }
+.op-cuotas { display: flex; flex-direction: column; gap: 6px; max-height: 240px; overflow-y: auto; margin: 6px 0; }
+.op-cuota { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+.op-cuota span { flex: 1; }
+
+/* Ventanas de las operaciones de la Caja general: etiqueta arriba, casilleros del mismo ancho, dos por fila. */
+.modal-card:has(.op-form) { width: min(520px, 92vw); max-width: none; }
+.op-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 16px; margin: 14px 0 6px; }
+.op-campo { display: flex; flex-direction: column; gap: 6px; min-width: 0; font-size: 12px; font-weight: 600; color: var(--color-muted); text-transform: uppercase; letter-spacing: 0.03em; }
+.op-campo select, .op-campo input[type='text'], .op-campo .input-moneda, .op-campo .selector-fecha { width: 100%; box-sizing: border-box; font-size: 14px; font-weight: 400; text-transform: none; letter-spacing: 0; }
+.op-campo .input-moneda input[type='text'] { width: 100%; }
+.op-completo { grid-column: 1 / -1; }
+.op-campo input[type='text'], .op-campo select { margin: 0; }
+.op-campo .input-moneda { margin: 0; }
+.op-campo .selector-fecha { min-height: 38px; }
+.modal-card .op-campo input[type='text'], .modal-card .op-campo select { margin: 0 !important; }
+
+.mes-selector .selector-fecha { margin-left: 12px; }
+.tabla-dia-a-dia tr.fila-resaltada td { background: var(--color-accent-suave, rgba(230, 80, 60, 0.12)); }
+
+.toolbar-pegada { margin-bottom: 12px; }
+.op-de-a { display: flex; align-items: flex-end; gap: 10px; }
+.op-de-a .op-campo { flex: 1; }
+.op-de-a .btn-redondo { flex: none; margin-bottom: 3px; }
+
+/* Caja: cabecera de la Caja general (tarjeta del total + "Agregar cuenta" afuera, a la derecha), y tabla de
+   Día a día ajustada al ancho. */
+.caja-acciones-cuentas { display: flex; align-items: stretch; gap: 10px; }
+/* Descripciones sugeridas como lista flotante debajo del casillero Descripción (vincularDesplegableSugeridas): no ocupan lugar
+   en el formulario. Se abren al tocar el casillero, al escribir o al elegir la categoría. */
+.gasto-campo-grande { position: relative; }
+/* La descripción cede ancho para que el Monto entre en la primera línea (si no, salta abajo). */
+.gasto-campo-grande:has(.retiro-sugerencias) { flex: 1 1 150px; max-width: 340px; }
+.retiro-sugerencias.desplegable-sugeridas {
+  display: none;
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  min-width: 220px;
+  max-width: 360px;
+  z-index: 30;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0;
+  margin: 0;
+  padding: 4px;
+  max-height: 248px;
+  overflow-y: auto;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  box-shadow: var(--shadow-md);
+}
+.retiro-sugerencias.desplegable-sugeridas.abierto:not([hidden]) { display: flex; }
+.desplegable-sugeridas .chip-retiro-grupo { display: flex; justify-content: space-between; background: none; border: none; border-radius: var(--radius-sm); }
+.desplegable-sugeridas .chip-retiro-grupo[hidden] { display: none; }
+.desplegable-sugeridas .chip-retiro-grupo:hover, .desplegable-sugeridas .chip-retiro-grupo.activo { background: var(--color-tint); }
+.desplegable-sugeridas .chip-retiro { flex: 1; text-align: left; padding: 8px 10px; }
+.desplegable-sugeridas .chip-retiro-x { padding: 8px 10px; }
+.caja-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 16px; max-width: 760px; margin-bottom: 4px; }
+.tabla-caja-general { width: 100%; }
+.tabla-caja-general td.celda-centrada, .tabla-caja-general th:last-child { width: 1%; text-align: center; }
+.tabla-dia-a-dia { width: 100%; max-width: 1000px; }
+.tabla-dia-a-dia th { white-space: normal; }
+.tabla-dia-a-dia th, .tabla-dia-a-dia td { padding: 9px 10px; }
+.pedidos-hoy .cierre-titulo-fila { justify-content: flex-start; max-width: 760px; }
+.pedidos-hoy .btn-icono-imprimir { background: none !important; border: none !important; box-shadow: none !important; padding: 4px 8px !important; font-size: 15px; line-height: 1; cursor: pointer; border-radius: var(--radius-sm); color: var(--color-muted); }
+.pedidos-hoy .btn-icono-imprimir:hover { background: var(--color-tint) !important; }
+.op-invertir-fila { margin: -6px 0 0; text-align: right; }
+.tabla-caja-general td, .tabla-operaciones td { vertical-align: middle; }
+
+/* Ajustes de tamaño (2026-09-21). */
+#btn-elegir-pedido-pendiente { margin-left: auto; height: 34px; padding: 0 14px; font-size: 13px; }
+.panel.caja-saldos-form { max-width: 500px; padding: 16px 18px; }
+.caja-saldos-form .caja-saldos-lista { gap: 6px; }
+.op-invertir-fila { margin: 0 !important; line-height: 1; }
+.op-form { row-gap: 10px; }
+
+/* Cierre del día: acciones arriba, junto a la fecha. */
+.cierre-caja .toolbar { margin-bottom: 4px; }
+.cierre-acciones-top { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; justify-content: flex-end; }
+.cierre-acciones-top .ayuda-campo { margin: 0 6px 0 0; }
+.cierre-caja .cierre-titulo-fila { margin-top: 14px; }
+.cierre-columnas { margin-bottom: 4px; }
+.cierre-caja .toolbar { margin-bottom: 14px; }
+
+/* Pedidos, Día a día: menos aire entre la barra de arriba y la tabla. */
+.toolbar-junta { margin-bottom: 16px; }
+.mes-cabecera { display: flex; align-items: center; justify-content: space-between; gap: 12px 24px; flex-wrap: wrap; margin-bottom: 12px; }
+.mes-cabecera .mes-selector { margin: 0; }
+.mes-cabecera .cierre-mes-resumen { margin: 0; }
+.tabla-dia-a-dia .fila-total-mes td { font-weight: 700; background: var(--color-tint); border-bottom: 2px solid var(--color-border); }
+
+/* Cuotas de un gasto: ventana más ancha y botones chicos para que entre todo. */
+.modal-card:has(.cuotas-lista) { width: min(600px, 92vw); max-width: none; }
+.cuota-fila { grid-template-columns: 110px 90px 1fr auto; }
+.cuota-fila button { height: 32px; padding: 0 14px; font-size: 13px; white-space: nowrap; }
+.cuota-fila span { min-width: 0; }
+/* Nuevo gasto: la descripción no necesita todo el ancho; el total va en la barra de la lista. */
+.gasto-campo-grande { flex: 0 1 320px; }
+.gastos-total-barra { font-weight: 700; font-size: 15px; white-space: nowrap; }
+
+#gastos-body td.acciones-cheque { text-align: right; }
+
+/* Estadísticas: Negocio / Personal / Total. */
+.est-vistas { margin-bottom: 14px; }
+.est-vista-personal .est-solo-negocio { display: none; }
+/* Antes iba en azul para distinguirlo de las entradas del negocio; se pidió que la plata que entra sea
+   siempre verde (2026-09-28), texto "· personal" ya lo aclara igual. */
+.est-barra-personal { background: var(--color-badge-pagada-text); }
+
+/* Categorías de gasto: grupos Negocio y Personal. */
+.fila-ambito-categoria td { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.04em; color: var(--color-muted); background: var(--color-tint); }
+.ambito-categoria-campo { margin: 0 0 10px; max-width: 180px; }
+
+.fila-ambito-categoria td { display: table-cell; }
+.fila-ambito-categoria td > span { vertical-align: middle; }
+.fila-ambito-categoria .btn-mas-ambito { margin-left: 10px; vertical-align: middle; transform: scale(0.85); }
+.form-categoria-inline { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 4px 0; }
+.form-categoria-inline input[type='text'] { flex: 1 1 220px; max-width: 320px; margin: 0; }
+
+/* Categorías: el "+" para agregar una descripción va al lado de las descripciones y más chico. */
+.descripciones-linea { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.descripciones-linea .retiro-sugerencias { margin: 0; }
+.descripciones-linea .ayuda-campo { margin: 0; }
+.descripciones-linea .agregar-descripcion-categoria { margin: 0; }
+.descripciones-linea .btn-mas { width: 26px; height: 26px; min-width: 26px; font-size: 16px; line-height: 1; padding: 0; }
+
+/* Manual: buscador por palabras. */
+.manual-buscar { display: flex; align-items: center; gap: 10px; max-width: 460px; margin: 0 0 16px; padding: 0 12px; height: 38px; border: 1px solid var(--color-border-strong); border-radius: var(--radius-sm); background: var(--color-panel); }
+.manual-buscar .buscador-lupa { display: inline-flex; color: var(--color-muted); }
+.manual-buscar input[type='text'] { flex: 1; height: 100%; margin: 0; padding: 0; border: none !important; background: transparent !important; box-shadow: none !important; outline: none; }
+.manual-buscar-cuenta { font-size: 12px; color: var(--color-muted); white-space: nowrap; }
+mark.manual-marca { background: rgba(240, 190, 60, 0.45); color: inherit; border-radius: 3px; padding: 0 2px; }
+
+.limpiar-filtros { display: block; margin-top: 10px; padding-left: 0; font-size: 11px; font-weight: 400; }
+.tabla-metodos-pago td .tarjetas-metodo { gap: 6px; }
+
+/* Manual: el buscador va debajo de los temas y más chico. */
+.manual-buscar { flex: 0 0 320px; max-width: 100%; height: 34px; margin: 8px 0 0; }
+.manual-buscar input[type='text'] { font-size: 13.5px; }
+/* Métodos de pago: "+" redondo y chico, como el de las descripciones. */
+.tarjetas-metodo .agregar-tarjeta { width: 24px; height: 24px; min-width: 24px; font-size: 15px; line-height: 1; padding: 0; }
+/* Descripción de los formularios de gasto e ingreso, y buscador de ingresos: no hace falta todo el ancho. */
+.gasto-campo-observacion { max-width: 420px; }
+#buscar-ingreso { max-width: 260px; }
+.manual-salto { flex-basis: 100%; height: 0; }
+
+/* Métodos de pago: las tarjetas se cargan al editar. */
+.edit-tarjetas { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+.edit-tarjetas-titulo { min-width: 130px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--color-muted); }
+.buscador { max-width: 260px; }
+
+/* Métodos de pago: formulario de alta y edición, ordenados. */
+form.form-metodo-pago { display: block; max-width: 760px; padding: 18px 20px; }
+.form-metodo-pago .btn-group { margin-top: 4px; }
+.edit-metodo { display: grid; grid-template-columns: 150px 1fr; align-items: center; gap: 12px 16px; padding: 6px 0; }
+.edit-metodo-etiqueta { font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.03em; color: var(--color-muted); }
+.edit-metodo .edit-nombre { max-width: 260px; margin: 0; }
+.edit-metodo-tarjetas { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+.edit-metodo-tarjetas .nueva-tarjeta-inline { width: 160px; height: 32px; margin: 0; font-size: 13px; }
+.edit-metodo-botones { margin-top: 8px; }
+.edit-metodo-etiqueta { text-align: left; }
+
+/* Estadísticas: precios de compras e inflación. */
+.est-tabla-precios, .est-tabla-inflacion { max-width: 900px; }
+.est-tabla-precios td, .est-tabla-inflacion td { white-space: nowrap; }
+.est-tabla-inflacion .fila-inflacion-input { display: flex; align-items: center; gap: 6px; }
+.est-tabla-inflacion .input-porcentaje { width: 76px; height: 32px; }
+.est-tabla-inflacion .est-inflacion-input { flex: 1; min-width: 0; height: 100%; margin: 0; font-size: 13px; text-align: right; }
+.est-tabla-inflacion .input-porcentaje span { font-size: 13px; padding-right: 8px; }
+.est-tabla-inflacion .btn-guardar-campo { width: 26px; height: 26px; }
+
+/* Estadísticas por secciones: solo se ve la elegida. */
+.est-secciones { margin: 6px 0 16px; }
+.est-seccion { display: none; }
+.est-sec-resumen .est-seccion[data-sec="resumen"],
+.est-sec-ventas .est-seccion[data-sec="ventas"],
+.est-sec-compras .est-seccion[data-sec="compras"],
+.est-sec-pendiente .est-seccion[data-sec="pendiente"],
+.est-sec-inflacion .est-seccion[data-sec="inflacion"] { display: block; }
+.est-seccion > h2:first-child, .est-seccion > .cierre-titulo-fila:first-child { margin-top: 0; }
+
+/* Estadísticas: más aire entre bloques y un solo tamaño de letra para el contenido. */
+.estadisticas-pantalla .est-vistas { margin-bottom: 14px; }
+.estadisticas-pantalla .est-toolbar { margin-bottom: 22px; }
+.estadisticas-pantalla .est-tarjetas { margin-bottom: 26px; }
+.estadisticas-pantalla .est-secciones { margin: 0 0 28px; }
+.estadisticas-pantalla .est-seccion h2 { font-size: 18px; margin-bottom: 14px; }
+.estadisticas-pantalla .est-seccion h2 + .est-leyenda { margin-top: -4px; }
+.estadisticas-pantalla .est-seccion .est-subtitulo { font-size: 15px; margin-bottom: 12px; }
+.estadisticas-pantalla .est-seccion > * + h2,
+.estadisticas-pantalla .est-seccion > * + .cierre-titulo-fila,
+.estadisticas-pantalla .est-seccion > * + .est-columnas { margin-top: 36px; }
+.estadisticas-pantalla .est-seccion .cierre-titulo-fila { margin-bottom: 14px; }
+.estadisticas-pantalla .est-columnas { gap: 24px 48px; }
+.estadisticas-pantalla .est-barras { row-gap: 12px; }
+.estadisticas-pantalla .est-barra-fila { font-size: 14px; }
+.estadisticas-pantalla .est-barra-nombre, .estadisticas-pantalla .est-barra-monto { font-size: 14px; }
+.estadisticas-pantalla .est-barra-detalle { font-size: 13px; }
+.estadisticas-pantalla .est-ventas { font-size: 14px; margin: 0 0 24px; }
+.estadisticas-pantalla .est-leyenda { font-size: 13px; margin-bottom: 12px; }
+.estadisticas-pantalla table td, .estadisticas-pantalla table th { font-size: 14px; }
+.estadisticas-pantalla table th { font-size: 12px; }
+.estadisticas-pantalla .est-var { font-size: 13px; }
+.estadisticas-pantalla .est-pendiente { margin-top: 0; }
+.estadisticas-pantalla .est-nota { font-size: 13px; margin-top: 10px; }
+.estadisticas-pantalla .est-seccion > * + * { margin-top: 48px; }
+.estadisticas-pantalla .est-seccion > h2 + *,
+.estadisticas-pantalla .est-seccion > h3 + *,
+.estadisticas-pantalla .est-seccion > .cierre-titulo-fila + *,
+.estadisticas-pantalla .est-seccion > .est-leyenda + * { margin-top: 0; }
+.estadisticas-pantalla .est-seccion > h2 + .est-leyenda { margin-top: -6px; }
+
+.estadisticas-pantalla .est-seccion > h3.est-subtitulo:not(:first-child) { margin-top: 48px; }
+.estadisticas-pantalla .est-seccion > h2:not(:first-child) { margin-top: 48px; }
+.estadisticas-pantalla .est-seccion > .cierre-titulo-fila:not(:first-child) { margin-top: 48px; }
+
+/* El "?" al lado de un título: chico y centrado con el texto. */
+.cierre-titulo-fila > .est-ayuda { margin-left: 0; }
+.cierre-titulo-fila { gap: 10px; }
+.est-ayuda-panel { top: calc(100% + 10px); }
+/* El título que lleva un "?" al lado no tiene margen propio: si no, el "?" queda más abajo que el texto. */
+.estadisticas-pantalla .est-seccion .cierre-titulo-fila h2,
+.estadisticas-pantalla .est-seccion .cierre-titulo-fila h3,
+.estadisticas-pantalla .est-seccion .cierre-titulo-fila .est-subtitulo { margin: 0; }
+
+/* Stock. */
+.tabla-stock { max-width: 900px; }
+.tabla-stock td.celda-centrada, .tabla-stock th:last-child { text-align: center; }
+.stock-falta { color: var(--color-danger, #e0534a); font-weight: 600; }
+.stock-aviso { margin: 0 0 16px; padding: 10px 14px; border-radius: var(--radius-sm); background: var(--color-tint); font-size: 14px; }
+.tabla-productos-stock .producto-articulo { min-width: 200px; }
+.tabla-productos-stock .producto-kg { width: 130px; height: 34px; }
+.stock-pantalla > h2 { margin-top: 28px; }
+
+.peso-unidad { display: flex; align-items: center; gap: 8px; }
+.peso-unidad .producto-kg { width: 96px; }
+.peso-unidad .producto-kg-unidad { width: 64px; min-width: 0; height: 34px; padding: 0 8px; }
+
+/* Productos: la configuración de stock y rendimiento de cada producto, agrupada en su propio recuadro
+   (peso/con quién comparte en una fila; tipo de carne/% en otra; el aviso de mínimo abajo) — separada del
+   nombre y los precios, para que no se sienta todo junto en una sola fila larga. */
+/* Vive solo dentro del modal "Stock — [producto]" (abrirModalStockProducto, productos.js): el modal ya pone
+   el título y el marco, así que esta caja no lleva fondo ni título propio. */
+.campos-stock-producto {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  width: fit-content;
+  max-width: 100%;
+}
+
+.campos-stock-fila {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.sp-carne-fila[hidden] {
+  display: none;
+}
+
+.sp-carne-fila {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.edit-stock-fila td { padding-top: 0; }
+#stock-nuevo-producto { width: 100%; }
+.tabla-productos td:last-child .btn-group { flex-wrap: wrap; justify-content: flex-end; gap: 6px; }
+.tabla-productos td:last-child .btn-group button { padding-left: 12px; padding-right: 12px; }
+
+/* Fila que se está editando: se destaca del resto. */
+tr.fila-editando td { background: var(--color-editando, rgba(233, 90, 70, 0.10)); border-bottom-color: transparent; }
+tr.fila-editando td:first-child { box-shadow: inset 3px 0 0 var(--color-accent); }
+tr.fila-editando + tr.fila-editando td { border-top: none; }
+tr.fila-editando:not(:has(+ tr.fila-editando)) td { border-bottom: 1px solid var(--color-accent); }
+.fila-editando .edit-nombre { width: 100%; min-width: 140px; }
+/* La fila en edición no cambia de color al pasar el mouse. */
+tbody tr.fila-editando:hover td, tbody tr.fila-editando:hover { background: var(--color-editando, rgba(233, 90, 70, 0.10)) !important; }
+tbody tr.fila-editando { cursor: default; }
+
+/* Fila en edición: un solo color liso (mezcla del acento con el fondo de las tarjetas), igual con o sin el mouse encima. */
+tbody tr.fila-editando,
+tbody tr.fila-editando:hover { background: color-mix(in srgb, var(--color-accent) 10%, var(--color-panel)) !important; }
+tbody tr.fila-editando td,
+tbody tr.fila-editando:hover td { background: transparent !important; }
+
+/* Edición de un producto: compacta, con Guardar y Cancelar lado a lado. */
+#produccion-unidad { height: 36px; min-width: 76px; }
+
+/* Edición de producto: los botones quedan a la mitad del bloque (abarcan las dos filas) y las etiquetas a la izquierda. */
+.campos-stock-producto .gasto-campo { align-items: flex-start; text-align: left; }
+.campos-stock-producto .gasto-campo > span { text-align: left; }
+
+/* Elegir el "Tipo" de un producto con botones en fila (Vaca · Cerdo · Pollo · Otro), en vez de un desplegable
+   nativo cuya lista tapa lo de arriba. Tocar el elegido lo desmarca. */
+.tipo-segmentado {
+  display: inline-flex;
+  align-items: center;
+  height: 36px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-panel);
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.tipo-opcion {
+  height: 100%;
+  padding: 0 12px;
+  border: none;
+  border-right: 1px solid var(--color-border);
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tipo-opcion:last-child {
+  border-right: none;
+}
+
+.tipo-opcion:hover {
+  background: var(--color-tint);
+}
+
+.tipo-opcion.active {
+  background: var(--color-secondary);
+  color: #fff;
+}
+
+/* "Lo que vende" como texto plano separado por puntos (sin pastillas que "flotan"): el tipo en gris chiquito y
+   la × solo al pasar el mouse. Aplica al alta de proveedor, a la ficha y a los atajos de una compra. */
+.alta-vende .retiro-sugerencias,
+#productos-proveedor,
+#ficha-proveedor .retiro-sugerencias {
+  gap: 2px 0;
+  align-items: center;
+}
+
+.alta-vende .chip-retiro-grupo,
+#productos-proveedor .chip-retiro-grupo,
+#ficha-proveedor .chip-retiro-grupo {
+  background: none;
+  border: none;
+  border-radius: 0;
+  overflow: visible;
+}
+
+.alta-vende .chip-retiro-grupo + .chip-retiro-grupo::before,
+#productos-proveedor .chip-retiro-grupo + .chip-retiro-grupo::before,
+#ficha-proveedor .chip-retiro-grupo + .chip-retiro-grupo::before {
+  content: '·';
+  color: var(--color-muted);
+  margin: 0 8px 0 4px;
+}
+
+.alta-vende .chip-retiro,
+#productos-proveedor .chip-retiro,
+#ficha-proveedor .chip-retiro {
+  padding: 3px 0;
+  font-size: 14px;
+}
+
+#productos-proveedor .chip-retiro:hover {
+  color: var(--color-secondary);
+  text-decoration: underline;
+}
+
+.alta-vende .chip-retiro .etiqueta-gasto,
+#productos-proveedor .chip-retiro .etiqueta-gasto,
+#ficha-proveedor .chip-retiro .etiqueta-gasto {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0 5px 0 0;
+  color: var(--color-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.alta-vende .chip-retiro-x,
+#productos-proveedor .chip-retiro-x,
+#ficha-proveedor .chip-retiro-x {
+  padding: 3px 0 3px 4px;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.alta-vende .chip-retiro-grupo:hover .chip-retiro-x,
+#productos-proveedor .chip-retiro-grupo:hover .chip-retiro-x,
+#ficha-proveedor .chip-retiro-grupo:hover .chip-retiro-x,
+.chip-retiro-x:focus-visible {
+  opacity: 1;
+}
+
+.alta-vende .retiro-sugerencias { margin: 6px 0 10px; }
+
+/* Clientes y Proveedores: la barra y la tabla del mismo ancho, así el buscador queda alineado con el borde derecho de la tabla. */
+.toolbar-lista {
+  max-width: 640px;
+}
+
+.tabla-clientes,
+.tabla-proveedores {
+  width: 100%;
+}
+
+/* Clientes / Proveedores: "+ Agregar" fijo arriba; debajo, pegada a la tabla, una fila con las pestañas a la
+   izquierda y el buscador (más chico) con sus filtros a la derecha. */
+.lista-agregar {
+  margin-bottom: 14px;
+}
+
+.fila-controles-lista {
+  margin-bottom: 12px;
+  flex-wrap: nowrap;
+}
+
+.toolbar-lista .reportes-toggle {
+  margin-bottom: 0;
+}
+
+.fila-controles-lista .busqueda-filtros {
+  flex: 0 1 300px;
+}
+
+.fila-controles-lista .busqueda-filtros .buscador {
+  flex: 0 1 200px;
+  max-width: 200px;
+}
+
+.tabla-pedido th:last-child,
+.tabla-pedido th:last-child {
+  text-align: center;
+}
+
+/* Mensaje rápido de los botones redondos (ver el script en inicio.js). */
+.tooltip-rapido {
+  position: fixed;
+  z-index: 200;
+  padding: 5px 9px;
+  border-radius: var(--radius-sm);
+  background: var(--color-toast-bg);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: var(--shadow-md);
+}
+
+.tooltip-rapido[hidden] {
+  display: none;
+}
+
+/* El "+" del alta de proveedor no se sale del cuadro: el campo de producto se achica al espacio que queda. */
+.fila-producto-proveedor {
+  flex-wrap: wrap;
+  max-width: 100%;
+}
+
+.fila-producto-proveedor input[type='text'] {
+  flex: 1 1 140px;
+  min-width: 0;
+}
+
+.fila-controles-lista .reportes-toggle {
+  flex-shrink: 0;
+}
+
+.fila-controles-lista .reportes-toggle .toggle {
+  white-space: nowrap;
+}
+
+/* Botones al final de cada línea editable: "−" (si hay más de una línea) y "+" (solo en la última). */
+.acciones-linea {
+  white-space: nowrap;
+  text-align: right;
+  width: 84px;
+}
+
+.acciones-linea .btn-redondo + .btn-redondo {
+  margin-left: 6px;
+}
+
+/* Formularios de carga (Gastos, Ingresos, Cheques, Compra, Producción, Cliente): casilleros sin caja, solo una
+   línea abajo que se marca al enfocar — mismo criterio que las líneas de Pedidos y Facturas. */
+.gasto-form input[type='text'],
+.gasto-form input[type='number'],
+.gasto-form input[type='tel'],
+.gasto-form select,
+.gasto-form .input-moneda,
+.gasto-form .selector-fecha-campo,
+.gasto-form .autocomplete-buscador-campo {
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.gasto-form input[type='text']:focus,
+.gasto-form input[type='number']:focus,
+.gasto-form input[type='tel']:focus,
+.gasto-form select:focus,
+.gasto-form .input-moneda:focus-within,
+.gasto-form .selector-fecha-campo:focus-within,
+.gasto-form .autocomplete-buscador-campo:focus-within {
+  border-color: transparent transparent var(--color-secondary);
+  box-shadow: none;
+  outline: none;
+}
+
+/* El "Tipo" como botones: si no entran en una fila, pasan a la siguiente (antes se salían del cuadro). */
+.tipo-segmentado {
+  flex-wrap: wrap;
+  height: auto;
+  gap: 6px;
+  border: none;
+  background: transparent;
+  overflow: visible;
+  max-width: 100%;
+}
+
+.tipo-opcion {
+  height: 34px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-panel);
+}
+
+.tipo-opcion:last-child {
+  border-right: 1px solid var(--color-border-strong);
+}
+
+.tipo-opcion.active {
+  border-color: var(--color-secondary);
+}
+
+/* "Lo que vende": 3 renglones como máximo; el resto se ve con "Ver todos". */
+.lista-limitada {
+  max-height: 84px;
+  overflow: hidden;
+}
+
+.ver-todos-lista {
+  display: block;
+  margin: 0 0 10px;
+  font-size: 13px;
+}
+
+/* Buscador + impresora juntos, a la derecha de la barra (la impresora va siempre después del buscador). */
+.buscador-e-imprimir {
+  margin-left: auto;
+}
+
+.buscador-e-imprimir .buscador {
+  margin-left: 0;
+}
+
+/* ===== Ronda de criterio único (2026-09-23) ===== */
+
+/* Estados como texto de color en negrita, sin pastilla (facturas, pedidos, "Dado de baja", cierres de caja). */
+.badge,
+.estado-cierre {
+  padding: 0;
+  border-radius: 0;
+  background: none;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.badge-pendiente { background: none; color: var(--color-accent); }
+.badge-pagada { background: none; color: var(--color-badge-pagada-text); }
+.badge-parcial { background: none; color: var(--color-badge-parcial-text); }
+.badge-anulada,
+.badge-baja { background: none; color: var(--color-badge-anulada-text); }
+.estado-cierre-ok { background: none; }
+.estado-cierre-mal { background: none; }
+.estado-cierre-nada { background: none; }
+
+/* Las etiquetas de tipo (Vaca, Cerdo…) también: texto gris chico, sin fondo. */
+.etiqueta-gasto,
+.chip-retiro .etiqueta-gasto {
+  background: none;
+  border: none;
+  padding: 0;
+  margin-left: 0;
+  margin-right: 6px;
+}
+
+/* Lista de facturas: el Saldo cuenta el estado (sin columna "Estado"). */
+.saldo-deuda { color: var(--color-accent); font-weight: 700; }
+.saldo-cero { color: var(--color-badge-pagada-text); font-weight: 700; }
+.saldo-anulada { color: var(--color-muted); text-decoration: none; }
+.fila-anulada td { color: var(--color-muted); text-decoration: line-through; }
+.fila-anulada td.saldo-anulada,
+.fila-anulada td.acciones-factura { text-decoration: none; }
+
+/* Filas de las tablas de carga (Pedidos, Facturas, Compras): siempre blancas, sin color al pasar el mouse
+   (son formularios, no filas que se tocan). */
+.tabla-sin-cajas tbody tr:hover td {
+  background: transparent;
+}
+
+/* El campo de cliente (y cualquier autocomplete) también con línea abajo, como producto y cantidad. */
+.autocomplete-buscador-campo {
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background: transparent;
+}
+
+.autocomplete-buscador-campo:focus-within {
+  border-color: transparent transparent var(--color-secondary);
+  box-shadow: none;
+}
+
+/* Facturas: cantidad más angosta y Total a la derecha, pegado a la tabla (bajo el Subtotal), del tamaño del título. */
+.tabla-factura td:nth-child(2) {
+  width: 104px;
+}
+
+/* El Total va adentro de la tabla, bajo los subtotales; el subtotal de cada línea es un poco más grande. */
+.tabla-factura td.subtotal-linea {
+  font-size: 15px;
+}
+
+.tabla-factura tfoot td {
+  text-align: left;
+  padding: 2px 8px 12px;
+  border: none;
+}
+
+.factura-total-panel {
+  font-size: 15px;
+  font-weight: 700;
+}
+
+/* El "+" y el "−" quedan pegados al último campo, no en el borde del cuadro. */
+.tabla-sin-cajas td.acciones-linea {
+  text-align: left;
+  width: 76px;
+  padding-left: 0;
+}
+
+/* Pedidos de hoy: "Enviar consulta" y la impresora, arriba a la derecha. */
+.pedidos-hoy-acciones {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Cobros: el total pendiente a la izquierda del buscador. */
+.total-pendiente-cobro {
+  margin: 0;
+  font-size: 16px;
+  line-height: 36px;
+  padding-top: 5px;
+}
+
+/* Bolsas y cajas de Pedidos de hoy: texto, sin pastilla. */
+.carga-bulto.cargado {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--color-text);
+}
+
+
+/* Formularios de alta y edición: mismos casilleros sin caja que el resto (además de `.gasto-form`). */
+#form-proveedor input[type='text'],
+#form-proveedor input[type='tel'],
+#form-producto input[type='text'],
+#form-producto input[type='number'],
+#form-producto select,
+#form-producto .input-moneda,
+.form-metodo-pago input[type='text'],
+.form-metodo-pago select,
+#form-pago-proveedor input[type='text'],
+#form-pago-proveedor select,
+#form-pago-proveedor .input-moneda,
+#form-saldos-caja input[type='text'],
+#form-saldos-caja .input-moneda,
+#ficha-cliente input[type='text'],
+#ficha-cliente input[type='tel'],
+#ficha-cliente select,
+#ficha-proveedor input[type='text'],
+#ficha-proveedor input[type='tel'] {
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+#form-proveedor input:focus,
+#form-producto input:focus,
+#form-producto select:focus,
+.form-metodo-pago input:focus,
+.form-metodo-pago select:focus,
+#form-pago-proveedor input:focus,
+#form-pago-proveedor select:focus,
+#form-saldos-caja input:focus,
+#ficha-cliente input:focus,
+#ficha-cliente select:focus,
+#ficha-proveedor input:focus {
+  border-color: transparent transparent var(--color-secondary);
+  box-shadow: none;
+}
+
+/* Los cuadros de "Agregar cliente" y "Agregar proveedor" del ancho de su contenido (antes 640px con la mitad vacía). */
+#form-cliente.panel,
+#form-proveedor.panel,
+#form-producto.panel {
+  max-width: 540px;
+}
+
+#form-cliente .gasto-campo-observacion,
+#form-proveedor .gasto-campo-observacion {
+  flex: 1 1 200px;
+}
+
+.campo-saldo-inicial-proveedor {
+  width: 170px;
+}
+
+.gasto-form > .gasto-fila {
+  width: 100%;
+}
+
+/* Pedidos y Facturas: la tabla mide lo que sus campos, así el "+" queda pegado al último campo. */
+.tabla-pedido.tabla-sin-cajas {
+  width: auto;
+}
+
+/* Facturas: columnas de ancho fijo, así el "+" queda siempre pegado al subtotal aunque la ventana sea ancha. */
+.tabla-factura.tabla-sin-cajas {
+  table-layout: fixed;
+  width: 692px;
+  max-width: 100%;
+}
+
+.tabla-pedido.tabla-sin-cajas tbody td:first-child {
+  width: 300px;
+}
+
+.tabla-pedido:not(.tabla-factura) td:nth-child(2) {
+  width: 110px;
+}
+
+.pedidos-hoy-acciones {
+  gap: 0;
+  margin-left: auto; /* la impresora queda a la derecha; "Enviar consulta" va pegado al título */
+}
+
+#btn-consulta-whatsapp svg {
+  width: 16px;
+  height: 16px;
+  vertical-align: middle;
+}
+
+.cheques-pantalla .cierre-titulo-fila .factura-total {
+  line-height: 30px;
+  padding-top: 4px;
+}
+
+.cheques-pantalla .cierre-titulo-fila {
+  margin-bottom: 16px;
+}
+
+.cheques-pantalla .cierre-titulo-fila .buscador {
+  margin: 0 0 0 auto;
+}
+
+.gastos-total-barra:empty { display: none; }
+
+.cheques-pantalla .cierre-titulo-fila .factura-total {
+  white-space: nowrap;
+}
+
+.cheques-pantalla {
+  min-width: min(720px, 100%);
+}
+
+/* Líneas de Pedidos/Facturas/Compras: el texto escrito queda pegado a su línea de abajo. */
+.tabla-sin-cajas .autocomplete-buscador-campo,
+.tabla-sin-cajas .input-unidad,
+.tabla-sin-cajas .input-moneda,
+.tabla-sin-cajas input[type='text'],
+.tabla-sin-cajas input[type='number'],
+.tabla-sin-cajas select {
+  height: 28px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.tabla-sin-cajas .input-unidad input,
+.tabla-sin-cajas .input-moneda input {
+  height: 100%;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+.tabla-factura.tabla-sin-cajas td.subtotal-linea {
+  width: 72px;
+  padding-right: 4px;
+}
+
+/* Nueva factura: el subtotal y los botones −/+ van en la misma celda, el "+" siempre pegado al importe. */
+.tabla-factura.tabla-sin-cajas td.subtotal-linea {
+  width: 160px;
+  white-space: nowrap;
+  padding-right: 0;
+}
+
+.tabla-factura .subtotal-monto {
+  display: inline-block;
+  min-width: 0;
+  vertical-align: middle;
+}
+
+.tabla-factura td.subtotal-linea .acciones-linea {
+  display: inline-block;
+  width: auto;
+  padding: 0;
+  vertical-align: middle;
+}
+
+.tabla-factura.tabla-sin-cajas {
+  width: 704px;
+}
+
+/* Sin ningún importe todavía, el "+" queda pegado al precio; con importes, el subtotal ocupa su lugar. */
+.tabla-factura.con-subtotal .subtotal-monto {
+  min-width: 70px;
+}
+
+/* El importe del Total queda justo bajo el del subtotal; la palabra "Total:" va a su izquierda. */
+.tabla-factura tfoot td.total-etiqueta {
+  text-align: right;
+  padding-right: 10px;
+}
+
+.tabla-factura tfoot td:last-child {
+  padding-left: 9px;
+}
+
+/* "Cantidad" no se corta cuando aparece la unidad (u. / kg) a su derecha. */
+.tabla-sin-cajas .input-unidad input {
+  padding-left: 4px !important;
+}
+
+.tabla-factura td:nth-child(2) {
+  width: 116px;
+}
+
+.tabla-factura.tabla-sin-cajas {
+  width: 716px;
+}
+
+.tabla-pedido:not(.tabla-factura) td:nth-child(2) {
+  width: 120px;
+}
+
+.btn-icono-lapiz {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  font-size: 16px;
+}
+
+.celda-acciones-fila {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.btn-icono-lapiz {
+  font-size: 20px;
+  line-height: 1;
+}
+
+/* Todas las pantallas del mismo ancho: la columna central ocupa el lugar que queda (antes medía lo que su contenido). */
+.contenido-central {
+  flex: 1 1 0;
+  min-width: 0;
+  max-width: 960px;
+  margin: 0 auto;
+}
+
+.contenido-central main {
+  max-width: none;
+  margin: 0;
+}
+
+.aviso-bajo-fecha {
+  margin-top: 4px;
+}
+
+.aviso-bajo-fecha:empty {
+  display: none;
+}
+
+.tabla-caja-general td:last-child {
+  text-align: right;
+}
+
+.tabla-caja-general .celda-acciones-fila {
+  justify-content: flex-end;
+}
+
+.gastos-pantalla .gasto-campo-observacion {
+  max-width: 290px;
+}
+
+/* Nuevo gasto: el saldo de la cuenta elegida va debajo del método de pago. */
+.gasto-col-medio {
+  display: flex;
+  flex-direction: column;
+}
+
+.gasto-medio-grupo {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.gasto-col-medio .gasto-saldo-cuenta {
+  align-self: flex-start;
+  padding: 4px 0 0;
+}
+
+/* "En 7 días" centrado respecto de la fecha de cobro. */
+.cobra-el-celda {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.gasto-fila:has(.gasto-col-medio) {
+  align-items: flex-start;
+}
+
+.gasto-col-medio[hidden] {
+  display: none;
+}
+
+.gasto-fila-botones {
+  align-items: flex-end;
+}
+
+.gasto-fila-botones .enlace-boton {
+  height: 36px;
+  display: inline-flex;
+  align-items: center;
+}
+
+.pie-lista {
+  margin: 10px 0 0;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.aviso-bajo-fecha .estado-cheque {
+  margin-left: 0;
+}
+
+/* Detalle de una cuenta: cierre con × y botones de acciones bajo el título. */
+.modal-card:has(.modal-x) {
+  position: relative;
+}
+
+.modal-x {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  width: 30px;
+  height: 30px;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  border-radius: 50% !important;
+  color: var(--color-text);
+  opacity: 0.75;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-x:hover {
+  opacity: 1;
+  color: var(--color-text) !important;
+  background: var(--color-tint) !important;
+}
+
+.modal-card:has(.modal-x) h3 {
+  padding-right: 44px;
+}
+
+.campo-cambio-metodo {
+  margin: 16px 0 24px;
+}
+
+.campo-cambio-metodo select {
+  width: 220px;
+  max-width: 100%;
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+  padding-left: 0;
+}
+
+.acciones-detalle-cuenta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 10px 0 4px;
+}
+
+.acciones-detalle-cuenta .enlace-peligro {
+  margin-left: auto;
+  color: var(--color-boton);
+}
+
+.gasto-resumen-tarjeta {
+  margin: 4px 0 12px;
+}
+
+/* Las sugerencias suben un poco (margin negativo) para pegarse al formulario; con el link "Pagar resumen de tarjeta"
+   en el medio lo pisaban: ahí van con su margen normal. */
+.gasto-resumen-tarjeta + .retiro-sugerencias {
+  margin-top: 0;
+}
+
+.gasto-resumen-tarjeta .enlace-boton {
+  padding: 0;
+}
+
+/* Stock: columnas repartidas en todo el ancho; el ⋮ pegado a la derecha. */
+.tabla-stock-resumen {
+  table-layout: fixed;
+  max-width: none;
+}
+
+.tabla-stock-resumen th:nth-child(1), .tabla-stock-resumen td:nth-child(1) { width: 22%; }
+.tabla-stock-resumen th:nth-child(2), .tabla-stock-resumen td:nth-child(2) { width: 16%; }
+.tabla-stock-resumen th:nth-child(3), .tabla-stock-resumen td:nth-child(3) { width: 15%; }
+.tabla-stock-resumen th:nth-child(4), .tabla-stock-resumen td:nth-child(4) { width: 12%; }
+.tabla-stock-resumen th:nth-child(5), .tabla-stock-resumen td:nth-child(5) { width: 15%; }
+.tabla-stock-resumen th:nth-child(6), .tabla-stock-resumen td:nth-child(6) { width: 15%; }
+.tabla-stock-resumen th:last-child, .tabla-stock-resumen td:last-child { width: 5%; min-width: 52px; text-align: right; padding-left: 4px; padding-right: 12px; }
+
+
+/* Corregir cómo se pagó: la lista de métodos y "Cambiar" en la misma línea. */
+.cambio-metodo-fila {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin: 16px 0 6px;
+}
+
+.cambio-metodo-fila .campo-cambio-metodo {
+  margin: 0;
+}
+
+.campo-motivo-cambio {
+  margin: 8px 0 6px;
+}
+
+.campo-cambio-metodo input[type="text"] {
+  width: 260px;
+  max-width: 100%;
+  height: 36px;
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+  padding-left: 0;
+}
+
+.enlace-peligro {
+  color: var(--color-boton) !important;
+}
+
+/* Motivo de anulación / Anulado por, en el detalle de una factura: en rojo (como "Anular"/"Reactivar"),
+   para que se note que es sobre algo anulado y no se pierda entre el resto del texto gris. */
+.texto-anulacion {
+  color: var(--color-boton);
+  margin: 0;
+}
+
+.pagos-de-factura .enlace-peligro,
+.anular-cobro-linea .enlace-peligro {
+  margin-left: 6px;
+}
+
+.anular-cobro-linea {
+  margin: 8px 0 0;
+}
+
+/* Anular factura: lo de la plata ya cobrada en su propio bloque, con los campos etiquetados y sin caja. */
+.anular-destino {
+  margin: 14px 0 18px;
+  padding: 12px 0;
+  border-top: 1px solid var(--color-border);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.anular-destino .anular-destino-titulo {
+  margin: 0 0 10px;
+}
+
+.anular-destino .anular-opcion {
+  margin: 0 0 8px;
+}
+
+.modal-card .anular-devolver {
+  display: flex;
+  align-items: flex-end;
+  gap: 16px;
+  margin: 8px 0 4px 24px;
+}
+
+.modal-card .anular-devolver .op-campo {
+  margin: 0;
+}
+
+.modal-card .anular-devolver .input-moneda {
+  width: 140px;
+  height: 32px;
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background: transparent;
+}
+
+.modal-card .anular-devolver select {
+  width: 170px;
+  height: 32px;
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background-color: transparent;
+  box-shadow: none;
+  padding-left: 0;
+}
+
+.modal-card .campo-motivo-anulacion {
+  margin: 0 0 16px;
+}
+
+.modal-card .campo-motivo-anulacion input[type='text'] {
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+/* Anular factura: cada opción en su bloque. */
+.anular-destino .anular-bloque {
+  padding: 10px 12px;
+  margin: 0 0 8px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+.anular-destino .anular-bloque .anular-opcion {
+  margin: 0;
+}
+
+.modal-card .anular-bloque .anular-devolver {
+  margin: 10px 0 2px 24px;
+}
+
+.btn-agregar-pago[hidden] { display: none; }
+
+/* Cantidades: flechitas ▲▼ pegadas al final del campo (suben y bajan de a 1). */
+.campo-con-flechas {
+  position: relative;
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  width: 100%;
+}
+
+.campo-con-flechas > input {
+  padding-right: 18px !important;
+  width: 100%;
+}
+
+.flechas-cantidad {
+  position: absolute;
+  top: 50%;
+  right: 2px;
+  transform: translateY(-50%);
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+.flechas-cantidad button {
+  width: 14px;
+  height: 9px;
+  padding: 0 !important;
+  border: none !important;
+  background: none !important;
+  box-shadow: none !important;
+  color: var(--color-muted) !important;
+  font-size: 6px !important;
+  line-height: 9px;
+  cursor: pointer;
+}
+
+.flechas-cantidad button:hover {
+  color: var(--color-text) !important;
+}
+
+/* En una línea de Pedido/Factura con unidad ("kg"/"u."), el campo comparte lugar con la unidad. */
+.input-unidad .campo-con-flechas {
+  flex: 1 1 auto;
+}
+
+.input-unidad .campo-con-flechas + .unidad-label {
+  margin-left: 2px;
+}
+
+.acciones-detalle-factura {
+  display: flex;
+  gap: 14px;
+  margin: 8px 0 2px;
+}
+
+.acciones-detalle-factura .enlace-boton {
+  padding: 0;
+}
+
+/* ⋮ chiquito junto a la línea "Pagó con" del detalle de una factura. */
+.menu-fila-chico {
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 2px;
+}
+
+.acciones-detalle-factura {
+  gap: 10px;
+  align-items: center;
+}
+
+.acciones-detalle-factura #det-editar-factura + #det-anular-factura::before {
+  content: none;
+}
+
+/* Detalle de una factura: la información a la izquierda y las acciones a la derecha, bajo el Subtotal / Total. */
+.pagos-de-factura {
+  max-width: 520px;
+}
+
+.pago-factura-fila {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.pago-etiqueta.oculta {
+  visibility: hidden;
+}
+
+.acciones-pago {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+}
+
+.acciones-pago .enlace-boton,
+.acciones-detalle-factura .enlace-boton {
+  padding: 0;
+  margin: 0;
+}
+
+.acciones-detalle-factura {
+  max-width: 520px;
+  justify-content: flex-end;
+}
+
+/* Acciones del detalle de una factura: livianas (letra normal, subrayado solo al pasar el mouse). */
+.acciones-pago .enlace-boton,
+.acciones-detalle-factura .enlace-boton {
+  font-weight: 400 !important;
+  font-size: 13px !important;
+  text-decoration: none !important;
+  color: var(--color-muted) !important;
+}
+
+.acciones-pago .enlace-boton:hover,
+.acciones-detalle-factura .enlace-boton:hover {
+  text-decoration: underline !important;
+  color: var(--color-text) !important;
+}
+
+.acciones-pago .enlace-peligro,
+.acciones-detalle-factura .enlace-peligro {
+  color: var(--color-accent) !important;
+}
+
+.acciones-pago .enlace-peligro:hover,
+.acciones-detalle-factura .enlace-peligro:hover {
+  color: var(--color-accent-hover) !important;
+}
+
+.acciones-detalle-factura {
+  margin-top: 10px;
+}
+
+/* Rendimiento: columnas repartidas; la fila del total en negrita. */
+.tabla-rendimiento {
+  table-layout: fixed;
+}
+
+.tabla-rendimiento th:nth-child(1), .tabla-rendimiento td:nth-child(1) { width: 24%; }
+.tabla-rendimiento th:nth-child(2), .tabla-rendimiento td:nth-child(2) { width: 19%; }
+.tabla-rendimiento th:nth-child(3), .tabla-rendimiento td:nth-child(3) { width: 19%; }
+.tabla-rendimiento th:nth-child(4), .tabla-rendimiento td:nth-child(4) { width: 19%; }
+.tabla-rendimiento th:nth-child(5), .tabla-rendimiento td:nth-child(5) { width: 19%; }
+
+.tabla-rendimiento tr.fila-total-rendimiento td {
+  font-weight: 700;
+  background: var(--color-tint);
+}
+
+.sp-carne-campo .input-porcentaje {
+  width: 84px;
+}
+
+.sp-minimo-campo .input-porcentaje {
+  width: 118px;
+}
+
+.campo-invalido {
+  border-color: var(--color-boton);
+}
+
+/* Posición absoluta (no ocupa lugar en el flujo) para que aparecer/desaparecer no mueva nada alrededor, sin
+   por eso dejar un hueco permanente reservado cuando no hay error. */
+.sp-carne-campo {
+  position: relative;
+}
+
+.campo-error-linea {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  margin-top: 3px;
+  white-space: nowrap;
+  visibility: hidden;
+  color: var(--color-boton);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.campo-error-linea.visible {
+  visibility: visible;
+}
+
+/* Insumos */
+.tabla-insumos {
+  table-layout: fixed;
+}
+
+.tabla-insumos th:nth-child(1), .tabla-insumos td:nth-child(1) { width: 27%; }
+.tabla-insumos th:nth-child(2), .tabla-insumos td:nth-child(2) { width: 12%; }
+.tabla-insumos th:nth-child(3), .tabla-insumos td:nth-child(3) { width: 22%; }
+.tabla-insumos th:nth-child(4), .tabla-insumos td:nth-child(4) { width: 17%; }
+.tabla-insumos th:nth-child(5), .tabla-insumos td:nth-child(5) { width: 15%; }
+.tabla-insumos th:last-child, .tabla-insumos td:last-child { width: 7%; min-width: 52px; text-align: right; padding-left: 4px; padding-right: 12px; }
+
+.toolbar-agregar-insumos {
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.lista-conteo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 8px 0 6px;
+  max-width: 460px;
+}
+
+.fila-conteo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.fila-conteo .input-unidad {
+  width: 170px;
+}
+
+.gasto-form > .lista-conteo {
+  flex: 0 0 100%;
+}
+
+.gasto-form > .pin-subtitulo {
+  flex: 0 0 100%;
+  margin: 0;
+}
+
+
+/* Logo: dos imágenes (colores para fondo claro y para fondo oscuro); se muestra la que corresponde al tema. */
+.logo-oscuro { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .logo-claro { display: none; }
+  :root:not([data-theme="light"]) .logo-oscuro { display: block; }
+}
+:root[data-theme="dark"] .logo-claro { display: none; }
+:root[data-theme="dark"] .logo-oscuro { display: block; }
+
+/* Copias de seguridad: fila de botones de un panel. */
+.acciones-panel {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+/* Cuadro de diálogo más alto que la ventana: se limita al alto de la ventana y scrollea por dentro (ver `ajustarAlturaModal`). */
+.modal-card.modal-con-scroll {
+  max-height: calc(100vh - 24px);
+  overflow-y: auto;
+}
+
+/* Autocompletar de cliente: si encontró por el nombre del negocio, lo aclara chiquito al lado. */
+.sugerencia-item-detalle {
+  margin-left: 6px;
+  color: var(--color-muted);
+  font-size: 12px;
+}
+
+/* "¿Quién sos?": lista de nombres para elegir antes de pedir la contraseña (con más de un usuario cargado). */
+.quien-sos-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 18px 0 4px;
+}
+
+.quien-sos-item {
+  height: 44px;
+  padding: 0 16px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-panel);
+  color: var(--color-text);
+  font-size: 15px;
+  text-align: left;
+  cursor: pointer;
+}
+
+.quien-sos-item:hover {
+  background: var(--color-tint);
+}
+
+/* Nombre y tipo del usuario logueado, arriba del menú. */
+.menu-usuario-nombre {
+  display: block;
+  padding: 6px 14px 10px;
+  color: var(--color-muted);
+  font-size: 12.5px;
+}
+
+/* Nueva compra: el Total adentro de la tabla, bajo la columna Importe (como en Nueva factura). */
+.tabla-compra tfoot td {
+  border: none;
+  padding: 2px 8px 12px;
+}
+
+.tabla-compra tfoot td.total-etiqueta {
+  text-align: right;
+  padding-right: 10px;
+}
+
+/* Agregar proveedor: filas que terminan todas en el mismo borde. Nombre y Nota se estiran; Teléfono y Saldo
+   inicial van a la derecha con el mismo ancho, uno debajo del otro. La fila de "Lo que vende" no salta de
+   renglón: la descripción se achica. */
+#form-proveedor.panel {
+  max-width: 600px;
+}
+
+#form-proveedor > .gasto-fila {
+  flex-wrap: nowrap;
+}
+
+#form-proveedor > .gasto-fila > .gasto-campo {
+  flex: 1 1 0;
+  min-width: 0;
+}
+
+#form-proveedor > .gasto-fila > .gasto-campo.campo-derecha-proveedor {
+  flex: 0 0 180px;
+}
+
+#form-proveedor > .gasto-fila > .gasto-campo input,
+#form-proveedor > .gasto-fila > .gasto-campo .input-moneda {
+  width: 100%;
+}
+
+#form-proveedor .fila-producto-proveedor {
+  flex-wrap: nowrap;
+}
+
+#form-proveedor .fila-producto-proveedor input[type='text'] {
+  flex: 1 1 0;
+  width: auto;
+}
+
+#form-proveedor .fila-producto-proveedor select {
+  flex: 0 0 auto;
+}
+
+#form-proveedor > .alta-vende {
+  width: 100%;
+  min-width: 0;
+}
+
+/* Las reglas de ancho por columna (`td:first-child`, `td:nth-child(n)`) son para las líneas: el pie tiene otra
+   cantidad de celdas (Total ocupa tres) y, si las heredaba, ensanchaba la tabla hasta salirse del cuadro.
+   `:nth-child(n)` para ganarles en especificidad. */
+.tabla-compra tfoot td:nth-child(n) {
+  width: auto;
+  min-width: 0;
+}
+
+/* El número del Total queda justo debajo del número del Importe (la sangría = el "$" del casillero, 24 px, más el
+   relleno de la celda) y "Total: $" se apoya pegado a su izquierda. */
+.tabla-compra tfoot td.celda-total-compra {
+  padding-left: 32px;
+}
+
+.total-compra-numero {
+  position: relative;
+}
+
+.total-compra-prefijo {
+  position: absolute;
+  right: 100%;
+  white-space: nowrap;
+}
+
+/* "Toda la plata del día": la tabla de la hoja impresa del cierre. */
+.tabla-plata-dia {
+  width: 100%;
+  max-width: 680px;
+}
+
+.tabla-plata-dia th:not(:first-child),
+.tabla-plata-dia td:not(:first-child) {
+  white-space: nowrap;
+}
+
+.tabla-plata-dia .plata-entro td:not(:first-child) {
+  color: var(--color-badge-pagada-text);
+}
+
+.tabla-plata-dia .plata-salio td:not(:first-child) {
+  color: var(--color-accent);
+}
+
+.tabla-plata-dia .fila-total-plata td {
+  font-weight: 700;
+  border-top: 2px solid var(--color-border);
+}
+
+.cierre-caja .cierre-columnas + .cierre-columnas {
+  margin-top: 28px;
+}
+
+.cheque-efectivo-cambio .est-ayuda {
+  margin-left: 0;
+}
+
+/* Cierre del día (opción A de 2026-09-29): tres números arriba y una sola tabla con cada cuenta (el efectivo
+   es una fila más, con el fondo inicial y lo contado escritos en la misma fila). */
+.cierre-tarjetas {
+  margin: 4px 0 26px;
+}
+
+.tabla-cuentas-dia {
+  width: 100%;
+}
+
+.tabla-cuentas-dia th,
+.tabla-cuentas-dia td {
+  white-space: nowrap;
+}
+
+/* Casilleros sin caja, solo una línea abajo (como las tablas de Pedidos y Facturas), con su "✓" al lado. */
+.tabla-cuentas-dia input[type='text'] {
+  width: 100px;
+  height: 30px;
+  padding: 2px 4px;
+  text-align: left;
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+
+.tabla-cuentas-dia input[type='text']:focus {
+  border-bottom-color: var(--color-secondary);
+  box-shadow: none;
+  outline: none;
+}
+
+.campo-con-guardar {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.tabla-cuentas-dia .cierre-contado-campo {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tabla-cuentas-dia .fila-efectivo-dia td {
+  background: var(--color-tint);
+}
+
+.tabla-cuentas-dia .fila-total-plata td {
+  font-weight: 700;
+  border-top: 2px solid var(--color-border);
+}
+
+.cierre-caja .tabla-cuentas-dia + .cierre-dif {
+  margin: 10px 0 0;
+}
+
+.cierre-caja .cierre-titulo-fila + .tabla-cuentas-dia,
+.cierre-caja .tabla-cuentas-dia ~ .cierre-columnas {
+  margin-top: 0;
+}
+
+.cierre-caja .tabla-cuentas-dia ~ .cierre-columnas {
+  margin-top: 30px;
+}
+
+@media (max-width: 1100px) {
+  .tabla-cuentas-dia th {
+    white-space: normal;
+  }
+
+  .tabla-cuentas-dia th,
+  .tabla-cuentas-dia td {
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+
+  .tabla-cuentas-dia input[type='text'] {
+    width: 84px;
+  }
+
+  .cierre-tarjetas.est-tarjetas .est-tarjeta strong {
+    font-size: 22px;
+  }
+}
+
+/* Las tres tarjetas del cierre siempre en una fila (son cortas); más compactas que las de Estadísticas. */
+.est-tarjetas.cierre-tarjetas {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.cierre-tarjetas .est-tarjeta {
+  padding: 12px 16px;
+}
+
+/* Pedidos: un producto por kilo que también se pide por unidad lleva un desplegable kg / u. dentro del casillero de cantidad
+   (mismo formato que el de Compras) y, al lado, el peso aproximado ("≈ 1,2 kg"). */
+.input-unidad select.pedido-unidad-select {
+  flex: 0 0 auto;
+  width: auto;
+  max-width: 60px;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent;
+  color: var(--color-muted);
+  font-size: 13px;
+  padding: 0 0 0 4px;
+  margin: 0 2px 0 0;
+}
+/* En la factura, lo que pidieron por unidad ("5 u.") queda a la derecha del producto, sin agrandar la fila. */
+.linea-factura td:first-child { position: relative; }
+.tag-pedido-unidades {
+  position: absolute;
+  right: 38px;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 12px;
+  color: var(--color-muted);
+  pointer-events: none;
+}
+
+/* Negocio: las pastillas Cobros | Gastos van arriba de las pastillas propias de cada pantalla. */
+.negocio-toggle { margin-bottom: 10px; }
+
+/* Atajos del menú lateral: el desplegable que sale al pasar el mouse sobre una pantalla con vistas adentro (ver atajos-menu.js).
+   Mismo aspecto que el menú flotante de la barra achicada (`.flyout`). */
+.atajos-menu {
+  position: fixed;
+  min-width: 150px;
+  background: var(--color-panel);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  padding: 6px;
+  z-index: 40;
+  display: none;
+}
+
+.atajos-menu.visible {
+  display: block;
+}
+
+/* Las opciones usan el mismo formato que las subpestañas del menú lateral (`.sublista`), sin la sangría de la izquierda. */
+.atajos-menu .sublista {
+  display: block;
+  margin: 0;
+}
+
+.atajos-menu .sublista button {
+  padding: 7px 14px;
+}
+
+/* Caja general: la línea chica bajo el nombre de una cuenta que tiene plata personal. */
+.caja-linea-personal { margin-top: 2px; font-size: 12px; font-weight: 400; }
+
+/* Pedidos: la fecha va primero y el cliente al lado; un día futuro programa el pedido (aviso debajo). */
+/* El cuerpo mide lo que la tabla de productos: el cliente queda a la izquierda y la fecha a la derecha, alineada con el borde de la tabla. */
+.pedido-cuerpo { width: fit-content; max-width: 100%; }
+.pedido-fila-superior { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; flex-wrap: wrap; margin-bottom: 24px; }
+.pedido-fila-superior .factura-header { margin: 0; }
+/* Fecha sin caja (solo la línea de abajo): el casillero mide lo justo, sin aire a los costados. */
+.gasto-form .selector-fecha-campo,
+.pedido-fecha .selector-fecha-campo {
+  padding: 0 2px 0 4px;
+}
+
+/* La fecha con el estilo del resto de la app: sin caja, solo la línea de abajo (que se marca en azul al enfocar). */
+.pedido-fecha .selector-fecha-campo {
+  border: none;
+  border-bottom: 1px solid var(--color-border-strong);
+  border-radius: 0;
+  background: transparent;
+  box-shadow: none;
+}
+.pedido-fecha .selector-fecha-campo:focus-within {
+  border-color: transparent transparent var(--color-secondary);
+  box-shadow: none;
+}
+
+
+/* Botones de un formulario de alta: el "+" va al lado del último casillero; en una fila al pie, Limpiar y los botones propios de la pantalla (Interés, Reintegro…). */
+.gasto-fila-acciones {
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.gasto-fila-acciones > .btn-redondo.btn-mas {
+  margin-bottom: 0;
+}
+
+/* Cobros: las pastillas y, a su lado, los botones Interés y Reintegro del negocio. */
+.cobros-fila-pastillas {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.cobros-fila-pastillas .reportes-toggle {
+  margin-bottom: 0;
+}
+
+/* Interés y Reintegro quedan a la derecha, arriba del buscador. */
+.cobros-acciones {
+  display: flex;
+  gap: 10px;
+  margin-left: auto;
+}
+
+/* Más de una carne por producto: una fila por carne (nombre y porcentaje alineados) debajo de los botones de tipo,
+   solo con 2 o más, y el total al pie. */
+.sp-mezcla {
+  display: grid;
+  grid-template-columns: max-content;
+  gap: 6px;
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-sm);
+  background: var(--color-panel);
+}
+
+.sp-mezcla:empty {
+  display: none;
+}
+
+.sp-mezcla-fila {
+  display: grid;
+  grid-template-columns: 110px 84px;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+}
+
+.sp-mezcla-nombre {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sp-mezcla-total {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.sp-mezcla-total.visible {
+  color: var(--color-boton);
+}
+
+/* Una carne por renglón en la columna Tipo de Stock: el nombre y su porcentaje no se separan. */
+.carne-linea {
+  white-space: nowrap;
+}

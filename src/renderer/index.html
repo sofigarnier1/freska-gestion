@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta
+    http-equiv="Content-Security-Policy"
+    content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://nominatim.openstreetmap.org; object-src 'none'; base-uri 'none'; form-action 'none'; frame-src 'none'"
+  />
+  <title>FRESKA Gestión</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header>
+    <button id="btn-menu-lateral" class="btn-menu-lateral" type="button" aria-label="Ocultar/mostrar el menú" title="Ocultar/mostrar el menú (Ctrl/Cmd + B)">
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+    </button>
+    <img src="assets/logo-freska-nombre.png" alt="FRESKA" class="logo-freska-header logo-claro" />
+    <img src="assets/logo-freska-nombre-oscuro.png" alt="" class="logo-freska-header logo-oscuro" />
+    <div class="header-derecha">
+    <div class="avisos-contenedor">
+      <button id="btn-avisos" class="btn-menu-usuario" type="button" aria-label="Avisos" aria-expanded="false" title="Avisos">
+        <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+        <span id="avisos-numero" class="avisos-numero" hidden></span>
+      </button>
+      <div id="avisos-panel" class="avisos-panel" hidden></div>
+    </div>
+    <button id="btn-buscador" class="btn-menu-usuario" type="button" aria-label="Buscar (Cmd o Ctrl + K)" title="Buscar (Cmd o Ctrl + K)">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+    <div class="menu-usuario">
+      <button id="btn-menu-usuario" class="btn-menu-usuario" type="button" aria-label="Menú">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      </button>
+      <div id="menu-usuario-lista" class="menu-usuario-lista">
+        <span id="menu-usuario-nombre" class="menu-usuario-nombre" hidden></span>
+        <button id="btn-usuarios" class="item-menu" type="button" hidden>Usuarios</button>
+        <button id="btn-direccion-local" class="item-menu" type="button">Dirección del local</button>
+        <button id="btn-cambiar-pin" class="item-menu" type="button">Cambiar contraseña</button>
+        <hr />
+        <button id="btn-backup" class="item-menu" type="button">Copia de seguridad</button>
+        <button id="btn-manual" class="item-menu" type="button">Manual de uso</button>
+        <button id="btn-actualizar" class="item-menu" type="button" hidden>Buscar actualizaciones</button>
+        <button id="btn-tema" class="item-menu" type="button">Modo oscuro</button>
+        <hr />
+        <button id="btn-cerrar-sesion" class="item-menu" type="button">Cerrar sesión</button>
+      </div>
+    </div>
+    </div>
+  </header>
+
+  <div class="cuerpo">
+    <aside id="sidebar">
+      <nav class="nav-grupos">
+        <!-- Para un empleado, el sidebar de abajo (Ventas/Dinero/Clientes y proveedores con flechitas) se
+             oculta entero y se muestran estos 4 ítems sueltos en su lugar: son solo Pedidos, Facturas,
+             Cobros y Clientes, así que no tiene sentido que estén escondidos atrás de un desplegable. Cada
+             uno reutiliza la misma pantalla (`data-view`) que su versión de arriba (`aplicarPermisosUI` en
+             sistema.js decide cuál de las dos versiones mostrar según el rol). -->
+        <div class="grupo grupo-empleado" data-grupo="pedidos-plano" hidden>
+          <button class="grupo-boton" data-grupo="pedidos-plano" data-view="pedidos" title="Pedidos">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span class="texto">Pedidos</span>
+          </button>
+        </div>
+        <div class="grupo grupo-empleado" data-grupo="facturas-plano" hidden>
+          <button class="grupo-boton" data-grupo="facturas-plano" data-view="facturas" title="Facturas">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8Z"/><path d="M14 2v6h6"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+            <span class="texto">Facturas</span>
+          </button>
+        </div>
+        <div class="grupo grupo-empleado" data-grupo="cobros-plano" hidden>
+          <button class="grupo-boton" data-grupo="cobros-plano" data-view="cobros" title="Cobros">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>
+            <span class="texto">Cobros</span>
+          </button>
+        </div>
+        <div class="grupo grupo-empleado" data-grupo="clientes-plano" hidden>
+          <button class="grupo-boton" data-grupo="clientes-plano" data-view="clientes" title="Clientes">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span class="texto">Clientes</span>
+          </button>
+        </div>
+        <div class="grupo abierto" data-grupo="ventas">
+          <button class="grupo-boton active" data-grupo="ventas" title="Ventas">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>
+            <span class="texto">Ventas</span>
+            <span class="flecha">▶</span>
+          </button>
+          <ul class="sublista">
+            <li><button data-view="pedidos" data-grupo="ventas" class="active">Pedidos</button></li>
+            <li><button data-view="facturas" data-grupo="ventas">Facturas</button></li>
+          </ul>
+        </div>
+        <div class="grupo" data-grupo="dinero">
+          <button class="grupo-boton" data-grupo="dinero" title="Dinero">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="20" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/></svg>
+            <span class="texto">Dinero</span>
+            <span class="flecha">▶</span>
+          </button>
+          <ul class="sublista">
+            <!-- "Negocio" junta Cobros y Gastos en una sola entrada del menú (adentro, pastillas Cobros | Gastos). El botón de
+                 Gastos sigue existiendo, oculto, porque la lupa, los avisos y los "Volver a…" navegan por `data-view`. -->
+            <li><button data-view="cobros" data-grupo="dinero" data-vistas-extra="gastos">Negocio</button></li>
+            <li hidden><button data-view="gastos" data-grupo="dinero">Gastos</button></li>
+            <li><button data-view="cierre" data-grupo="dinero">Caja</button></li>
+            <li><button data-view="cheques" data-grupo="dinero">Cheques</button></li>
+            <li><button data-view="ingresos" data-grupo="dinero">Fondos personales</button></li>
+          </ul>
+        </div>
+        <div class="grupo" data-grupo="clientes">
+          <button class="grupo-boton" data-grupo="clientes" title="Clientes y proveedores">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span class="texto">Clientes y proveedores</span>
+            <span class="flecha">▶</span>
+          </button>
+          <ul class="sublista">
+            <li><button data-view="clientes" data-grupo="clientes">Clientes</button></li>
+            <li><button data-view="proveedores" data-grupo="clientes">Proveedores</button></li>
+            <li><button data-view="vendedores" data-grupo="clientes">Vendedores</button></li>
+          </ul>
+        </div>
+        <div class="grupo" data-grupo="productos">
+          <button class="grupo-boton" data-grupo="productos" title="Productos y stock">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 8 12 3 3 8l9 5 9-5Z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg>
+            <span class="texto">Productos y stock</span>
+            <span class="flecha">▶</span>
+          </button>
+          <ul class="sublista">
+            <li><button data-view="productos" data-grupo="productos">Productos</button></li>
+            <li><button data-view="stock" data-grupo="productos">Stock</button></li>
+          </ul>
+        </div>
+        <div class="grupo" data-grupo="estadisticas">
+          <button class="grupo-boton" data-grupo="estadisticas" data-view="estadisticas" title="Estadísticas">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="20" x2="20" y2="20"/><rect x="6" y="12" width="3" height="8"/><rect x="13" y="7" width="3" height="13"/></svg>
+            <span class="texto">Estadísticas</span>
+          </button>
+        </div>
+      </nav>
+    </aside>
+
+    <nav class="flyout" id="flyout"></nav>
+
+    <div class="contenido-central">
+      <div class="miga-grupo" id="miga-grupo"></div>
+      <main id="app">
+        <p>Cargando...</p>
+      </main>
+    </div>
+  </div>
+
+  <div id="pantalla-pin" class="visible"></div>
+  <div id="modal-overlay"></div>
+  <div id="toast"></div>
+  <div id="area-impresion"></div>
+  <button id="btn-subir" class="btn-subir" type="button" aria-label="Volver arriba" title="Volver arriba" tabindex="-1">
+    <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5"/><path d="M5 12l7-7 7 7"/></svg>
+  </button>
+
+  <script src="mock-freska.js"></script>
+  <script src="utilidades.js"></script>
+  <script src="navegacion.js"></script>
+  <script src="facturas.js"></script>
+  <script src="mensajes-whatsapp.js"></script>
+  <script src="pedidos.js"></script>
+  <script src="cobros.js"></script>
+  <script src="cierre-caja.js"></script>
+  <script src="caja-general.js"></script>
+  <script src="cheques.js"></script>
+  <script src="gastos.js"></script>
+  <script src="ingresos.js"></script>
+  <script src="fondos-personales.js"></script>
+  <script src="clientes.js"></script>
+  <script src="productos.js"></script>
+  <script src="copias-manual.js"></script>
+  <script src="sistema.js"></script>
+  <script src="inicio.js"></script>
+  <script src="proveedores.js"></script>
+  <script src="vendedores.js"></script>
+  <script src="estadisticas.js"></script>
+  <script src="stock.js"></script>
+  <script src="buscador.js"></script>
+  <script src="avisos.js"></script>
+  <script src="navegacion-teclado.js"></script>
+  <script src="atajos-menu.js"></script>
+</body>
+</html>
